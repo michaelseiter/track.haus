@@ -27,9 +27,9 @@ if [ "$1" == "songfinish" ]; then
             album) album="$value" ;;
             rating) 
                 case "$value" in
-                    -1) rating="DISLIKE" ;;
-                    1) rating="LIKE" ;;
-                    *) rating="UNRATED" ;;
+                    -1) rating="-1" ;;
+                    1) rating="1" ;;
+                    *) rating="0" ;;
                 esac
                 ;;
             stationName) station="$value" ;;

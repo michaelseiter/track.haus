@@ -5,28 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Track Haus</title>
     <link rel="icon" type="image/svg+xml" href="/public/track-haus-mark.svg" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="/src/styles/theme.css">
     <script type="module" src="/src/main.ts"></script>
-    <style>
-      :root {
-        --surface-1: #ffffff;
-        --surface-2: #f3f4f6;
-        --text-1: #111827;
-        --text-2: #374151;
-        --text-3: #6b7280;
-        --green-6: #059669;
-        --red-6: #dc2626;
-      }
-
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, sans-serif;
-        background: var(--surface-1);
-        color: var(--text-1);
-      }
-    </style>
   </head>
   <body>
     <nav-bar></nav-bar>
-    <play-history></play-history>
+    <main class="container">
+      <play-history></play-history>
+    </main>
   </body>
 </html>

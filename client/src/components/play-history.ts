@@ -24,55 +24,97 @@ export class PlayHistory extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: 1rem;
+      padding: var(--space-md) 0;
     }
 
     .play-list {
       display: grid;
-      gap: 1rem;
+      gap: var(--space-md);
       max-width: 800px;
       margin: 0 auto;
     }
 
     .play-card {
       background: var(--surface-2);
-      border-radius: 8px;
-      padding: 1rem;
+      border: 1px solid rgba(0, 240, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
       display: grid;
-      gap: 0.5rem;
+      gap: var(--space-sm);
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .play-card:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: var(--glow-sm), var(--shadow-md);
+      border-color: rgba(0, 240, 255, 0.2);
     }
 
     .track-title {
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-bold);
+      letter-spacing: var(--tracking-tight);
       color: var(--text-1);
     }
 
     .track-meta {
       color: var(--text-2);
-      font-size: 0.9rem;
+      font-size: var(--font-size-md);
     }
 
     .station {
-      color: var(--text-2);
-      font-size: 0.8rem;
+      color: var(--primary);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-medium);
+      letter-spacing: var(--tracking-wide);
     }
 
     .timestamp {
       color: var(--text-3);
-      font-size: 0.8rem;
+      font-size: var(--font-size-sm);
+      margin-top: var(--space-sm);
     }
 
     .rating {
-      font-size: 1.2rem;
+      font-size: var(--font-size-xl);
+      position: absolute;
+      top: var(--space-md);
+      right: var(--space-md);
     }
 
     .rating.LIKE {
-      color: var(--green-6);
+      color: var(--success);
+      text-shadow: 0 0 10px var(--success);
     }
 
     .rating.DISLIKE {
-      color: var(--red-6);
+      color: var(--error);
+      text-shadow: 0 0 10px var(--error);
+    }
+
+    .rating.UNRATED {
+      color: var(--text-3);
+      text-shadow: 0 0 5px var(--text-3);
+    }
+
+    .error {
+      color: var(--error);
+      padding: var(--space-md);
+      border: 1px solid var(--error);
+      border-radius: var(--radius-sm);
+      margin: var(--space-md) 0;
+      text-align: center;
+      background: rgba(255, 0, 127, 0.1);
+      box-shadow: var(--glow-sm);
+    }
+
+    .loading {
+      text-align: center;
+      padding: var(--space-xl);
+      color: var(--text-2);
     }
   `;
 
@@ -118,16 +160,16 @@ export class PlayHistory extends LitElement {
   }
 
   private getRatingEmoji(rating: Play['rating']): string {
-    switch (rating) {
-      case 'LIKE': return '👍';
-      case 'DISLIKE': return '👎';
-      default: return '•';
+    switch (rating.toUpperCase()) {
+      case 'LIKE': return '🤘';
+      case 'DISLIKE': return '😡';
+      default: return '😐';
     }
   }
 
   render() {
     if (this.loading) {
-      return html`<div>Loading...</div>`;
+      return html`<div class="loading">Loading...</div>`;
     }
 
     if (this.error) {

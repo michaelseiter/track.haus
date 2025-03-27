@@ -6,12 +6,14 @@ export class NavBar extends LitElement {
   static styles = css`
     :host {
       display: block;
-      background: white;
-      border-bottom: 1px solid #eee;
-      padding: 1rem;
+      background: var(--surface-3);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+      padding: var(--space-lg);
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: var(--glow-sm);
+      backdrop-filter: blur(10px);
     }
 
     .nav-content {
@@ -27,9 +29,11 @@ export class NavBar extends LitElement {
       align-items: center;
       gap: 0.5rem;
       text-decoration: none;
-      color: #333;
-      font-weight: 600;
-      font-size: 1.2rem;
+      color: var(--primary);
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+      font-weight: var(--font-bold);
+      font-size: var(--font-size-lg);
+      letter-spacing: var(--tracking-wide);
     }
 
     .nav-links {
@@ -52,8 +56,10 @@ export class NavBar extends LitElement {
     }
 
     .nav-links a.active {
-      color: #009688;
-      background: #e0f2f1;
+      color: var(--warm-white);
+      background: var(--secondary);
+      box-shadow: var(--glow-md);
+      text-shadow: 0 0 10px var(--neon-blue);
     }
   `;
 
@@ -63,8 +69,7 @@ export class NavBar extends LitElement {
     return html`
       <div class="nav-content">
         <a href="/" class="logo">
-          <img src="/public/track-haus-mark.svg" alt="Track Haus" height="40">
-          <span>Track Haus</span>
+          <img src="/public/track-haus-mark.svg" alt="Track Haus" height="60">
         </a>
         <div class="nav-links">
           <a href="/" class="${path === '/' ? 'active' : ''}">Now Playing</a>
