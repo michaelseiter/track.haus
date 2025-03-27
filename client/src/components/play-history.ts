@@ -175,7 +175,11 @@ export class PlayHistory extends LitElement {
 
   private formatDate(dateStr: string): string {
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return formatInTimeZone(new Date(dateStr), userTimeZone, 'MMM d, yyyy h:mm a');
+    console.log('User time zone:', userTimeZone);
+    // Ensure we parse the input as UTC by appending 'Z'
+    const utcDate = new Date(dateStr + 'Z');
+    console.log('Input date:', dateStr, 'Parsed as:', utcDate.toISOString());
+    return formatInTimeZone(utcDate, userTimeZone, 'MMM d, yyyy h:mm a');
   }
 
   private getRatingEmoji(rating: Play['rating']): string {
