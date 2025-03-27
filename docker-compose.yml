@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://trackhaus:trackhaus@db:5432/trackhaus
+      - ENVIRONMENT=development
+    volumes:
+      - ./api:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=trackhaus
+      - POSTGRES_PASSWORD=trackhaus
+      - POSTGRES_DB=trackhaus
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
