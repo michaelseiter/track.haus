@@ -17,7 +17,7 @@ if [ "$1" == "songfinish" ]; then
     title=""
     artist=""
     album=""
-    rating="0"
+    rating="UNRATED"
     station=""
 
     while IFS='=' read -r key value; do
@@ -25,7 +25,13 @@ if [ "$1" == "songfinish" ]; then
             title) title="$value" ;;
             artist) artist="$value" ;;
             album) album="$value" ;;
-            rating) rating="$value" ;;
+            rating) 
+                case "$value" in
+                    -1) rating="DISLIKE" ;;
+                    1) rating="LIKE" ;;
+                    *) rating="UNRATED" ;;
+                esac
+                ;;
             stationName) station="$value" ;;
         esac
     done
