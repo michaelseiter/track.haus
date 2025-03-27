@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { formatInTimeZone } from 'date-fns-tz';
+import { format } from 'date-fns';
 
 // Make TypeScript happy with our custom elements
 declare global {
@@ -174,12 +174,7 @@ export class PlayHistory extends LitElement {
   }
 
   private formatDate(dateStr: string): string {
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log('User time zone:', userTimeZone);
-    // Ensure we parse the input as UTC by appending 'Z'
-    const utcDate = new Date(dateStr + 'Z');
-    console.log('Input date:', dateStr, 'Parsed as:', utcDate.toISOString());
-    return formatInTimeZone(utcDate, userTimeZone, 'MMM d, yyyy h:mm a');
+    return format(new Date(dateStr + 'Z'), 'MMM d, yyyy h:mm a');
   }
 
   private getRatingEmoji(rating: Play['rating']): string {
