@@ -28,76 +28,94 @@ export class PlayHistory extends LitElement {
     }
 
     .play-list {
-      display: grid;
-      gap: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
       max-width: 800px;
       margin: 0 auto;
     }
 
-    .play-card {
-      background: var(--surface-2);
-      border: 1px solid rgba(0, 240, 255, 0.1);
-      border-radius: var(--radius-md);
-      padding: var(--space-lg);
+    .play-item {
       display: grid;
+      grid-template-columns: 1fr auto;
       gap: var(--space-sm);
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow-sm);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s ease;
       position: relative;
-      overflow: hidden;
     }
 
-    .play-card:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: var(--glow-sm), var(--shadow-md);
-      border-color: rgba(0, 240, 255, 0.2);
+    .play-item:hover {
+      background: var(--surface-2);
+    }
+
+    .play-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xs);
+      min-width: 0;
+    }
+
+    .primary-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-width: 0;
     }
 
     .track-title {
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-bold);
-      letter-spacing: var(--tracking-tight);
+      font-weight: var(--font-medium);
       color: var(--text-1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .track-meta {
+    .artist {
       color: var(--text-2);
-      font-size: var(--font-size-md);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .secondary-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: var(--font-size-sm);
+      color: var(--text-3);
+    }
+
+    .album {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .station {
       color: var(--primary);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-medium);
-      letter-spacing: var(--tracking-wide);
-    }
-
-    .timestamp {
-      color: var(--text-3);
-      font-size: var(--font-size-sm);
-      margin-top: var(--space-sm);
     }
 
     .rating {
-      font-size: var(--font-size-xl);
-      position: absolute;
-      top: var(--space-md);
-      right: var(--space-md);
+      font-size: var(--font-size-md);
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .play-item:hover .rating {
+      opacity: 1;
     }
 
     .rating.LIKE {
       color: var(--success);
-      text-shadow: 0 0 10px var(--success);
     }
 
     .rating.DISLIKE {
       color: var(--error);
-      text-shadow: 0 0 10px var(--error);
     }
 
     .rating.UNRATED {
       color: var(--text-3);
-      text-shadow: 0 0 5px var(--text-3);
     }
 
     .error {
@@ -179,11 +197,20 @@ export class PlayHistory extends LitElement {
     return html`
       <div class="play-list">
         ${this.plays.map(play => html`
-          <div class="play-card">
-            <div class="track-title">${play.track.title}</div>
-            <div class="track-meta">${play.track.artist.name} • ${play.track.album.title}</div>
-            <div class="station">${play.station.name}</div>
-            <div class="timestamp">${this.formatDate(play.played_at)}</div>
+          <div class="play-item">
+            <div class="play-content">
+              <div class="primary-info">
+                <div class="track-title">${play.track.title}</div>
+                <div class="artist">by ${play.track.artist.name}</div>
+              </div>
+              <div class="secondary-info">
+                <div class="album">${play.track.album.title}</div>
+                <div>•</div>
+                <div class="station">${play.station.name}</div>
+                <div>•</div>
+                <div>${this.formatDate(play.played_at)}</div>
+              </div>
+            </div>
             <div class="rating ${play.rating}">${this.getRatingEmoji(play.rating)}</div>
           </div>
         `)}
