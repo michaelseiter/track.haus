@@ -63,7 +63,7 @@ export class NavBar extends LitElement {
     return html`
       <div class="nav-content">
         <a href="/" class="logo">
-          <img src="/track-haus-mark.svg" alt="Track Haus" height="40">
+          <img src="/public/track-haus-mark.svg" alt="Track Haus" height="40">
           <span>Track Haus</span>
         </a>
         <div class="nav-links">
