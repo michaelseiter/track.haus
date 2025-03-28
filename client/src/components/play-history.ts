@@ -112,8 +112,12 @@ export class PlayHistory extends LitElement {
       color: var(--success);
     }
 
-    .rating.DISLIKE {
+    .rating.BAN {
       color: var(--error);
+    }
+
+    .rating.TIRED {
+      color: var(--warning);
     }
 
     .rating.UNRATED {
@@ -136,6 +140,11 @@ export class PlayHistory extends LitElement {
       padding: var(--space-xl);
       color: var(--text-2);
     }
+
+    .cyber-tired {
+      fill: var(--plasma-purple);
+      stroke: var(--plasma-purple);
+      }
   `;
 
   async connectedCallback() {
@@ -182,7 +191,8 @@ export class PlayHistory extends LitElement {
   private getRatingEmoji(rating: Play['rating']) {
     switch (rating.toUpperCase()) {
       case 'LIKE': return html`<img src="/public/cyber-heart.svg" alt="Like" style="width: 48px; height: 48px; vertical-align: middle;">`;
-      case 'DISLIKE': return html`<img src="/public/cyber-ban.svg" alt="Dislike" style="width: 48px; height: 48px; vertical-align: middle;">`;
+      case 'BAN': return html`<img src="/public/cyber-ban.svg" alt="Ban" style="width: 48px; height: 48px; vertical-align: middle;">`;
+      case 'TIRED': return html`<img src="/public/cyber-tired.svg" alt="Tired" style="width: 48px; height: 48px; vertical-align: middle;">`;
       default: return '';
     }
   }

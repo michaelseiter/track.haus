@@ -11,7 +11,7 @@ export interface Play {
   id: number;
   track: Track;
   station: Station;
-  rating: 'LIKE' | 'DISLIKE' | 'UNRATED';
+  rating: 'UNRATED' | 'LIKE' | 'BAN' | 'TIRED';
   played_at: string;
   created_at: string;
 }

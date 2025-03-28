@@ -27,9 +27,10 @@ if [ "$1" == "songfinish" ]; then
             album) album="$value" ;;
             rating) 
                 case "$value" in
-                    -1) rating="-1" ;;
+                    0) rating="0" ;;
                     1) rating="1" ;;
-                    *) rating="0" ;;
+                    2) rating="2" ;;
+                    3) rating="3" ;;
                 esac
                 ;;
             stationName) station="$value" ;;
@@ -56,7 +57,7 @@ if [ "$1" == "songfinish" ]; then
            \"artist\": \"$artist\",
            \"album\": \"$album\",
            \"station\": \"$station\",
-           \"rating\": $rating
+           \"rating\": \"$rating\"
          }")
 
     # Split response into body and status code
