@@ -2,8 +2,8 @@
 :root {
   /* Core Colors */
   --neon-pink: #FF2E88;     /* Primary, bold highlight */
-  --deep-black: #0A0A0A;    /* Background, high contrast */
-  --gunmetal: #1A1A1A;      /* UI elements, cards */
+  --midnight-plum: #1A0B22;    /* Darker variant of synthwave-plum */
+  --synthwave-plum: #291132;      /* Deep purple background */
   
   /* Accent Colors */
   --neon-yellow: #FFD700;   /* Electric energy */
@@ -16,9 +16,9 @@
   --warm-white: #F5F5F5;    /* Text contrast */
 
   /* Surface colors */
-  --surface-1: var(--deep-black);    /* Main background */
-  --surface-2: var(--gunmetal);      /* Cards, elevated elements */
-  --surface-3: rgba(26, 26, 26, 0.9); /* Nav, overlays */
+  --surface-1: var(--synthwave-plum);    /* Main background */
+  --surface-2: var(--midnight-plum);      /* Cards, elevated elements */
+  --surface-3: rgba(26, 26, 26, 0.5); /* Nav, overlays */
   
   /* Text colors */
   --text-1: var(--warm-white);      /* Primary text */
@@ -84,7 +84,7 @@
 body {
   margin: 0;
   font-family: var(--font-mono);
-  background: var(--surface-3);
+  background: var(--surface-1);
   color: var(--text-1);
   line-height: 1.5;
   margin-left: 270px; /* 30px less than the sidebar width */
