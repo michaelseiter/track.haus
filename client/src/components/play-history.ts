@@ -30,23 +30,25 @@ export class PlayHistory extends LitElement {
     .play-list {
       display: flex;
       flex-direction: column;
-      gap: var(--space-xs);
-      max-width: 800px;
-      margin: 0 auto;
+    }
+
+    h1 {
+      margin-left: var(--space-md);
     }
 
     .play-item {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: var(--space-sm);
-      padding: var(--space-sm) var(--space-md);
+      padding: var(--space-md);
       border-radius: var(--radius-sm);
       transition: background-color 0.2s ease;
       position: relative;
+      border-bottom: 4px double rgba(255, 255, 255, 0.2);
     }
 
     .play-item:hover {
-      background: var(--surface-2);
+      background: var(--surface-3);
     }
 
     .play-content {
@@ -177,11 +179,11 @@ export class PlayHistory extends LitElement {
     return format(new Date(dateStr + 'Z'), 'MMM d, yyyy h:mm a');
   }
 
-  private getRatingEmoji(rating: Play['rating']): string {
+  private getRatingEmoji(rating: Play['rating']) {
     switch (rating.toUpperCase()) {
-      case 'LIKE': return '🤘';
-      case 'DISLIKE': return '😡';
-      default: return '😐';
+      case 'LIKE': return html`<img src="/public/cyber-heart.svg" alt="Like" style="width: 48px; height: 48px; vertical-align: middle;">`;
+      case 'DISLIKE': return html`<img src="/public/cyber-ban.svg" alt="Dislike" style="width: 48px; height: 48px; vertical-align: middle;">`;
+      default: return '';
     }
   }
 
@@ -196,6 +198,7 @@ export class PlayHistory extends LitElement {
 
     return html`
       <div class="play-list">
+      <h1>Plays</h1>
         ${this.plays.map(play => html`
           <div class="play-item">
             <div class="play-content">

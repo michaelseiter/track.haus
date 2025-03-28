@@ -1,24 +1,24 @@
 /* Colors */
 :root {
   /* Core Colors */
-  --neon-blue: #00F0FF;    /* Primary, bold highlight */
-  --deep-black: #0A0A0A;   /* Background, high contrast */
-  --gunmetal: #1E1E1E;     /* UI elements, cards */
+  --neon-pink: #FF2E88;     /* Primary, bold highlight */
+  --deep-black: #0A0A0A;    /* Background, high contrast */
+  --gunmetal: #1A1A1A;      /* UI elements, cards */
   
   /* Accent Colors */
-  --electric-purple: #7D00FF;  /* Futuristic club vibes */
-  --neon-cyan: #00E5FF;       /* Soft glow */
-  --acid-green: #00FF87;      /* Sharp highlight */
+  --neon-yellow: #FFD700;   /* Electric energy */
+  --cyber-teal: #00FFE5;    /* Digital glow */
+  --plasma-purple: #B967FF;  /* Ethereal highlight */
   
   /* Contrast Colors */
-  --deep-magenta: #FF007F;    /* Retrowave contrast */
-  --fiery-orange: #FF5F00;    /* Digital warmth */
-  --warm-white: #F5F5F5;      /* Text contrast */
+  --toxic-green: #39FF14;   /* Matrix-style pop */
+  --cyber-orange: #FF7A00;  /* Synthetic warmth */
+  --warm-white: #F5F5F5;    /* Text contrast */
 
   /* Surface colors */
   --surface-1: var(--deep-black);    /* Main background */
   --surface-2: var(--gunmetal);      /* Cards, elevated elements */
-  --surface-3: rgba(30, 30, 30, 0.9); /* Nav, overlays */
+  --surface-3: rgba(26, 26, 26, 0.9); /* Nav, overlays */
   
   /* Text colors */
   --text-1: var(--warm-white);      /* Primary text */
@@ -26,18 +26,18 @@
   --text-3: rgba(245, 245, 245, 0.5); /* Disabled text */
   
   /* Brand colors */
-  --primary: var(--neon-blue);       /* Primary actions */
-  --secondary: var(--electric-purple); /* Secondary actions */
+  --primary: var(--neon-pink);        /* Primary actions */
+  --secondary: var(--cyber-teal);   /* Secondary actions */
   
   /* Feedback colors */
-  --success: var(--acid-green);     /* Success states */
-  --error: var(--deep-magenta);     /* Error states */
-  --warning: var(--fiery-orange);   /* Warning states */
+  --success: var(--toxic-green);    /* Success states */
+  --error: var(--neon-pink);       /* Error states */
+  --warning: var(--cyber-orange);   /* Warning states */
 
   /* Effects */
-  --glow-sm: 0 0 5px rgba(0, 240, 255, 0.3);
-  --glow-md: 0 0 10px rgba(0, 240, 255, 0.5);
-  --glow-lg: 0 0 20px rgba(0, 240, 255, 0.7);
+  --glow-sm: 0 0 5px rgba(255, 46, 136, 0.3);
+  --glow-md: 0 0 10px rgba(255, 46, 136, 0.5);
+  --glow-lg: 0 0 20px rgba(255, 46, 136, 0.7);
   
   /* Spacing */
   --space-xs: 0.25rem;   /* 4px */
@@ -64,7 +64,7 @@
   --tracking-wide: 0.02em;
   
   /* Layout */
-  --container-width: 1200px;
+  --container-width: 800px;
   --nav-height: 80px;
   
   /* Effects */
@@ -77,12 +77,18 @@
 }
 
 /* Global styles */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: var(--font-mono);
-  background: var(--surface-1);
+  background: var(--surface-3);
   color: var(--text-1);
   line-height: 1.5;
+  margin-left: 270px; /* 30px less than the sidebar width */
+  padding: var(--space-xl);
 }
 
 /* Utility classes */
@@ -90,13 +96,6 @@ body {
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 var(--space-md);
-}
-
-.card {
-  background: var(--surface-3);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  box-shadow: var(--shadow-sm);
 }
 
 /* Animations */

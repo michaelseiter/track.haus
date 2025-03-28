@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="-12 -12 48 48" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .ban {
+      fill: none;
+      stroke: #FF2E88;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 4px #FF2E88);
+    }
+  </style>
+  <g class="ban">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="4.5" y1="19.5" x2="19.5" y2="4.5" stroke-linecap="round"/>
+  </g>
+</svg>
