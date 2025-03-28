@@ -76,7 +76,7 @@ class PlayCreate(BaseModel):
     artist: str
     album: str
     station: str
-    rating: Optional[int] = None  # Pianobar uses 0 or 1
+    rating: Optional[int] = None  # Pianobar: 0=Unrated, 1=Like, 2=Ban, 3=Tired
 
     model_config = ConfigDict(
         json_schema_extra={

@@ -32,9 +32,10 @@ class User(Base):
     plays = relationship("Play", back_populates="user")
 
 class Rating(enum.Enum):
-    LIKE = "like"
-    DISLIKE = "dislike"
-    UNRATED = "unrated"
+    UNRATED = "unrated"  # 0: No rating
+    LIKE = "like"        # 1: Love the song
+    BAN = "ban"          # 2: Never play this song
+    TIRED = "tired"      # 3: Ban song for 1 month
 
 class Artist(Base):
     __tablename__ = "artists"

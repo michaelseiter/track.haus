@@ -108,7 +108,7 @@ def create_play(db: Session, play_data: PlayCreate, user_id: int) -> Play:
         user_id=user_id,
         track_id=track.id,
         station_id=station.id,
-        rating=Rating.LIKE if play_data.rating == 1 else Rating.DISLIKE if play_data.rating == -1 else Rating.UNRATED,
+        rating={0: Rating.UNRATED, 1: Rating.LIKE, 2: Rating.BAN, 3: Rating.TIRED}.get(play_data.rating, Rating.UNRATED),
         played_at=datetime.now(UTC)
     )
     db.add(play)
