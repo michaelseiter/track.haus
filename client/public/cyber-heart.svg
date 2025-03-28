@@ -1,16 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="48" height="48" viewBox="-12 -12 48 48" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-12 -12 48 48" xmlns="http://www.w3.org/2000/svg">
   <style>
-    @keyframes pulse {
-      0% { filter: drop-shadow(0 0 3px #FF2E88) drop-shadow(0 0 3px #FF2E88); }
-      50% { filter: drop-shadow(0 0 8px #FF2E88) drop-shadow(0 0 8px #FF2E88); }
-      100% { filter: drop-shadow(0 0 3px #FF2E88) drop-shadow(0 0 3px #FF2E88); }
+    @keyframes echo-1 {
+      0% { 
+        opacity: 0.8;
+        transform: translate(12px, 12px) scale(1) translate(-12px, -12px);
+      }
+      100% { 
+        opacity: 0;
+        transform: translate(12px, 12px) scale(1.2) translate(-12px, -12px);
+      }
+    }
+    @keyframes echo-2 {
+      0% { 
+        opacity: 0.8;
+        transform: translate(12px, 12px) scale(1) translate(-12px, -12px);
+      }
+      100% { 
+        opacity: 0;
+        transform: translate(12px, 12px) scale(1.6) translate(-12px, -12px);
+      }
+    }
+    @keyframes echo-3 {
+      0% { 
+        opacity: 0.8;
+        transform: translate(12px, 12px) scale(1) translate(-12px, -12px);
+      }
+      100% { 
+        opacity: 0;
+        transform: translate(12px, 12px) scale(2) translate(-12px, -12px);
+      }
     }
     .heart {
       fill: #FF2E88;
-      animation: pulse 1.5s ease-in-out infinite;
     }
+    .echo {
+      fill: none;
+      stroke: #FF2E88;
+      stroke-width: 1.5;
+      opacity: 0;
+    }
+    .echo-1 { animation: echo-1 2s ease-out infinite; }
+    .echo-2 { animation: echo-2 2s ease-out infinite; }
+    .echo-3 { animation: echo-3 2s ease-out infinite; }
   </style>
+  
+  <!-- Echo outlines -->
+  <path class="echo echo-1" 
+        d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+  <path class="echo echo-2" 
+        d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+  <path class="echo echo-3" 
+        d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+  
+  <!-- Main heart -->
   <path class="heart" 
-        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
 </svg>
