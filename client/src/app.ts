@@ -5,6 +5,7 @@ import './components/play-history';
 import './components/login-page';
 import './components/nav-bar';
 import './components/verify-page';
+import './components/stats-page';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -45,6 +46,8 @@ export class App extends LitElement {
         return html`<login-page></login-page>`;
       case '/verify':
         return html`<verify-page></verify-page>`;
+      case '/stats':
+        return html`<nav-bar></nav-bar><stats-page></stats-page>`;
       case '/':
       default:
         return html`<nav-bar></nav-bar><play-history></play-history>`;

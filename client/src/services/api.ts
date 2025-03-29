@@ -46,6 +46,10 @@ export class ApiClient {
         return this.fetch(`/plays?limit=${limit}&offset=${offset}`);
     }
 
+    async getStats() {
+        return this.fetch('/api/stats');
+    }
+
     async recordPlay(play: any) {
         return this.fetch('/track/play', {
             method: 'POST',
