@@ -96,7 +96,7 @@ class PlayResponse(BaseModel):
     track: TrackResponse
     station: StationResponse
     rating: Rating
-    played_at: datetime
+
     duration: int | None
     created_at: datetime
 
@@ -145,6 +145,7 @@ class PlayCreate(BaseModel):
     station: str
     rating: Optional[int] = None
     duration: Optional[int] = None  # Duration in seconds  # Pianobar: 0=Unrated, 1=Like, 2=Ban, 3=Tired
+
 
     model_config = ConfigDict(
         json_schema_extra={

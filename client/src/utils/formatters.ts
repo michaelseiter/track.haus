@@ -13,7 +13,7 @@ export function formatDuration(seconds: number): string {
 }
 
 export function formatDate(dateString: string): string {
-  // Ensure UTC date is converted to local time
+  // Parse UTC date string and ensure UTC interpretation
   const date = new Date(dateString + 'Z');
   return date.toLocaleDateString("en-US", {
     year: "numeric",

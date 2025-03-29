@@ -110,11 +110,9 @@ export class NavBar extends LitElement {
         </a>
         <nav class="nav-links">
           <a href="/" class="${path === '/' ? 'active' : ''}">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="4"/>
-              <path d="M16 8v-2a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v2"/>
-              <rect x="8" y="4" width="8" height="2"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+</svg>
             Plays
           </a>
           <a href="/stats" class="${path === '/stats' ? 'active' : ''}">

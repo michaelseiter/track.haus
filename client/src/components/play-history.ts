@@ -208,7 +208,7 @@ export class PlayHistory extends LitElement {
                 <div>•</div>
                 <div class="station">${play.station.name}</div>
                 <div>•</div>
-                <div>${this.formatDate(play.played_at)}</div>
+                <div>${this.formatDate(play.created_at)}</div>
                 ${play.duration ? html`
                   <div>•</div>
                   <div>${formatDuration(play.duration)}</div>

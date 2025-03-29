@@ -108,9 +108,9 @@ class Play(Base):
     __tablename__ = "plays"
     __table_args__ = (
         # Index for user's play history
-        Index('idx_plays_user_played_at', 'user_id', 'played_at'),
+        Index('idx_plays_user_created_at', 'user_id', 'created_at'),
         # Index for track play counts
-        Index('idx_plays_track_played_at', 'track_id', 'played_at'),
+        Index('idx_plays_track_created_at', 'track_id', 'created_at'),
     )
 
     id = Column(Integer, primary_key=True)
@@ -118,9 +118,8 @@ class Play(Base):
     track_id = Column(Integer, ForeignKey("tracks.id"), nullable=False)
     station_id = Column(Integer, ForeignKey("stations.id"), nullable=False)
     rating = Column(Enum(Rating), default=Rating.UNRATED, nullable=False)
-    played_at = Column(DateTime, nullable=False)
     duration = Column(Integer, nullable=True, comment="Duration in seconds")
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)  # When the song was played
 
     # Relationships
     user = relationship("User", back_populates="plays")

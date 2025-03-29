@@ -140,7 +140,7 @@ def get_user_plays(db: Session, user_id: int, limit: int = 50, offset: int = 0) 
     ).filter(
         Play.user_id == user_id
     ).order_by(
-        Play.played_at.desc()
+        Play.created_at.desc()
     ).offset(offset).limit(limit).all()
 
 def get_user_stats(db: Session, user_id: int) -> dict:
@@ -163,8 +163,8 @@ def get_user_stats(db: Session, user_id: int) -> dict:
     unique_tracks = len(set(play.track_id for play in plays))
     unique_artists = len(set(play.track.artist_id for play in plays))
     total_time = sum(play.duration or 0 for play in plays)
-    first_play = min(play.played_at for play in plays)
-    last_play = max(play.played_at for play in plays)
+    first_play = min(play.created_at for play in plays)
+    last_play = max(play.created_at for play in plays)
 
     # Calculate top items (tracks, artists, albums, stations)
     track_counts = {}
@@ -184,12 +184,12 @@ def get_user_stats(db: Session, user_id: int) -> dict:
                 'id': track_id,
                 'name': play.track.title,
                 'play_count': 0,
-                'last_played': play.played_at
+                'last_played': play.created_at
             }
         track_counts[track_id]['play_count'] += 1
         track_counts[track_id]['last_played'] = max(
             track_counts[track_id]['last_played'],
-            play.played_at
+            play.created_at
         )
 
         # Artist stats
@@ -199,12 +199,12 @@ def get_user_stats(db: Session, user_id: int) -> dict:
                 'id': artist_id,
                 'name': play.track.artist.name,
                 'play_count': 0,
-                'last_played': play.played_at
+                'last_played': play.created_at
             }
         artist_counts[artist_id]['play_count'] += 1
         artist_counts[artist_id]['last_played'] = max(
             artist_counts[artist_id]['last_played'],
-            play.played_at
+            play.created_at
         )
 
         # Album stats
@@ -214,12 +214,12 @@ def get_user_stats(db: Session, user_id: int) -> dict:
                 'id': album_id,
                 'name': play.track.album.title,
                 'play_count': 0,
-                'last_played': play.played_at
+                'last_played': play.created_at
             }
         album_counts[album_id]['play_count'] += 1
         album_counts[album_id]['last_played'] = max(
             album_counts[album_id]['last_played'],
-            play.played_at
+            play.created_at
         )
 
         # Station stats
@@ -229,18 +229,19 @@ def get_user_stats(db: Session, user_id: int) -> dict:
                 'id': station_id,
                 'name': play.station.name,
                 'play_count': 0,
-                'last_played': play.played_at
+                'last_played': play.created_at
             }
         station_counts[station_id]['play_count'] += 1
         station_counts[station_id]['last_played'] = max(
             station_counts[station_id]['last_played'],
-            play.played_at
+            play.created_at
         )
 
         # Time stats
-        hour = play.played_at.hour
-        day = play.played_at.weekday()
-        month = play.played_at.month
+        # created_at is stored in UTC
+        hour = play.created_at.hour
+        day = play.created_at.weekday()
+        month = play.created_at.month
 
         hour_counts[hour] = hour_counts.get(hour, 0) + 1
         day_counts[day] = day_counts.get(day, 0) + 1
@@ -310,8 +311,8 @@ def create_play(db: Session, play_data: PlayCreate, user_id: int) -> Play:
         track_id=track.id,
         station_id=station.id,
         rating={0: Rating.UNRATED, 1: Rating.LIKE, 2: Rating.BAN, 3: Rating.TIRED}.get(play_data.rating, Rating.UNRATED),
-        played_at=datetime.now(UTC),
-        duration=play_data.duration
+        duration=play_data.duration,
+        created_at=datetime.now(UTC)
     )
     db.add(play)
     db.commit()

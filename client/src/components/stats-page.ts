@@ -131,8 +131,6 @@ export class StatsPage extends LitElement {
   private formatHour(hour: number | null | undefined) {
     if (hour === null || hour === undefined) return '--:00 AM';
     // Convert UTC hour to local time
-    // getTimezoneOffset returns minutes AHEAD of UTC (opposite of what we want)
-    // so we subtract instead of add
     const localHour = ((hour - new Date().getTimezoneOffset() / 60) + 24) % 24;
     const hour12 = localHour % 12 || 12; // Convert to 12-hour format
     const ampm = localHour < 12 ? 'AM' : 'PM';
@@ -140,9 +138,8 @@ export class StatsPage extends LitElement {
   }
 
   private formatDay(day: number | null | undefined) {
-    console.log(day);
     if (day === null || day === undefined) return '--';
-    return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day];
+    return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][day];
   }
 
   private formatMonth(month: number | null | undefined) {
@@ -259,10 +256,10 @@ export class StatsPage extends LitElement {
       <h1>Stats</h1>
       <div class="grid">
         ${this.renderOverallStats()}
-        ${this.renderTopItems("Top Tracks", this.stats.top_tracks)}
+        ${this.renderTopItems("Top Stations", this.stats.top_stations)}
         ${this.renderTopItems("Top Artists", this.stats.top_artists)}
         ${this.renderTopItems("Top Albums", this.stats.top_albums)}
-        ${this.renderTopItems("Top Stations", this.stats.top_stations)}
+        ${this.renderTopItems("Top Tracks", this.stats.top_tracks)}
         ${this.renderTimeStats("Plays by Hour", this.stats.plays_by_hour)}
         ${this.renderTimeStats("Plays by Day", this.stats.plays_by_day)}
         ${this.renderTimeStats("Plays by Month", this.stats.plays_by_month)}
