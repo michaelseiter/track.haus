@@ -50,9 +50,10 @@ export class StatsPage extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: var(--space-lg);
-      max-width: 1200px;
+      padding: var(--space-md) 0;
+      max-width: 620px;
       margin: 0 auto;
+      margin-left: 300px;
     }
 
     .grid {
@@ -63,15 +64,15 @@ export class StatsPage extends LitElement {
     }
 
     .card {
-      background: var(--color-background-alt);
+      background: var(--midnight-plum);
       border-radius: var(--radius-lg);
       padding: var(--space-lg);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-md);
     }
 
     .card h2 {
       margin: 0 0 var(--space-md);
-      color: var(--color-primary);
+      color: var(--toxic-green);
       font-size: var(--text-xl);
     }
 
@@ -80,7 +81,7 @@ export class StatsPage extends LitElement {
       justify-content: space-between;
       margin-bottom: var(--space-sm);
       padding-bottom: var(--space-sm);
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 2px solid var(--synthwave-plum);
     }
 
     .stat:last-child {
@@ -128,12 +129,14 @@ export class StatsPage extends LitElement {
   }
 
   private formatHour(hour: number | null | undefined) {
-    if (hour === null || hour === undefined) return '--:00';
+    if (hour === null || hour === undefined) return '--:00 AM';
     // Convert UTC hour to local time
     // getTimezoneOffset returns minutes AHEAD of UTC (opposite of what we want)
     // so we subtract instead of add
     const localHour = ((hour - new Date().getTimezoneOffset() / 60) + 24) % 24;
-    return `${Math.floor(localHour).toString().padStart(2, '0')}:00`;
+    const hour12 = localHour % 12 || 12; // Convert to 12-hour format
+    const ampm = localHour < 12 ? 'AM' : 'PM';
+    return `${hour12}:00 ${ampm}`;
   }
 
   private formatDay(day: number | null | undefined) {
@@ -253,6 +256,7 @@ export class StatsPage extends LitElement {
     }
 
     return html`
+      <h1>Stats</h1>
       <div class="grid">
         ${this.renderOverallStats()}
         ${this.renderTopItems("Top Tracks", this.stats.top_tracks)}

@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { format } from 'date-fns';
 import { api } from '../services/api';
 import { Play } from '../types/play';
+import { formatDuration } from '../utils/formatters';
 
 // Make TypeScript happy with our custom elements
 declare global {
@@ -32,10 +33,7 @@ export class PlayHistory extends LitElement {
     .play-list {
       display: flex;
       flex-direction: column;
-    }
-
-    h1 {
-      margin-left: var(--space-md);
+      max-width: 740px;
     }
 
     .play-item {
@@ -211,6 +209,10 @@ export class PlayHistory extends LitElement {
                 <div class="station">${play.station.name}</div>
                 <div>•</div>
                 <div>${this.formatDate(play.played_at)}</div>
+                ${play.duration ? html`
+                  <div>•</div>
+                  <div>${formatDuration(play.duration)}</div>
+                ` : ''}
               </div>
             </div>
             <div class="rating ${play.rating}">${this.getRatingEmoji(play.rating)}</div>

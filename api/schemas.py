@@ -97,6 +97,7 @@ class PlayResponse(BaseModel):
     station: StationResponse
     rating: Rating
     played_at: datetime
+    duration: int | None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -142,7 +143,8 @@ class PlayCreate(BaseModel):
     artist: str
     album: str
     station: str
-    rating: Optional[int] = None  # Pianobar: 0=Unrated, 1=Like, 2=Ban, 3=Tired
+    rating: Optional[int] = None
+    duration: Optional[int] = None  # Duration in seconds  # Pianobar: 0=Unrated, 1=Like, 2=Ban, 3=Tired
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -151,7 +153,8 @@ class PlayCreate(BaseModel):
                 "artist": "Radiohead",
                 "album": "Kid A",
                 "station": "Radiohead Radio",
-                "rating": 1
+                "rating": 1,
+                "duration": 285
             }
         }
     )

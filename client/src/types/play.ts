@@ -13,5 +13,6 @@ export interface Play {
   station: Station;
   rating: 'UNRATED' | 'LIKE' | 'BAN' | 'TIRED';
   played_at: string;
+  duration: number | null;
   created_at: string;
 }

@@ -119,6 +119,7 @@ class Play(Base):
     station_id = Column(Integer, ForeignKey("stations.id"), nullable=False)
     rating = Column(Enum(Rating), default=Rating.UNRATED, nullable=False)
     played_at = Column(DateTime, nullable=False)
+    duration = Column(Integer, nullable=True, comment="Duration in seconds")
     created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
 
     # Relationships

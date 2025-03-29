@@ -20,6 +20,7 @@ export interface Track {
   artist: Artist;
   album: Album;
   mbid: string | null;
+  duration: number | null;
   created_at: string;
   updated_at: string;
   validated: string | null;

@@ -19,6 +19,7 @@ if [ "$1" == "songfinish" ]; then
     album=""
     rating="UNRATED"
     station=""
+    duration=0
 
     while IFS='=' read -r key value; do
         case "$key" in
@@ -34,6 +35,7 @@ if [ "$1" == "songfinish" ]; then
                 esac
                 ;;
             stationName) station="$value" ;;
+            songDuration) duration="$value" ;;
         esac
     done
 
@@ -58,7 +60,8 @@ if [ "$1" == "songfinish" ]; then
            \"artist\": \"$artist\",
            \"album\": \"$album\",
            \"station\": \"$station\",
-           \"rating\": \"$rating\"
+           \"rating\": \"$rating\",
+           \"duration\": \"$duration\"
          }")
 
     # Split response into body and status code

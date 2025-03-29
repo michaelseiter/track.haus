@@ -162,7 +162,7 @@ def get_user_stats(db: Session, user_id: int) -> dict:
     total_plays = len(plays)
     unique_tracks = len(set(play.track_id for play in plays))
     unique_artists = len(set(play.track.artist_id for play in plays))
-    total_time = sum(play.track.duration or 0 for play in plays)
+    total_time = sum(play.duration or 0 for play in plays)
     first_play = min(play.played_at for play in plays)
     last_play = max(play.played_at for play in plays)
 
@@ -310,7 +310,8 @@ def create_play(db: Session, play_data: PlayCreate, user_id: int) -> Play:
         track_id=track.id,
         station_id=station.id,
         rating={0: Rating.UNRATED, 1: Rating.LIKE, 2: Rating.BAN, 3: Rating.TIRED}.get(play_data.rating, Rating.UNRATED),
-        played_at=datetime.now(UTC)
+        played_at=datetime.now(UTC),
+        duration=play_data.duration
     )
     db.add(play)
     db.commit()
