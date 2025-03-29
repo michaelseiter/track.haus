@@ -143,6 +143,159 @@ def get_user_plays(db: Session, user_id: int, limit: int = 50, offset: int = 0) 
         Play.played_at.desc()
     ).offset(offset).limit(limit).all()
 
+def get_user_stats(db: Session, user_id: int) -> dict:
+    """Get comprehensive stats for a user."""
+    # Get all plays for the user with their related entities
+    plays = db.query(Play).filter(Play.user_id == user_id).options(
+        joinedload(Play.track).joinedload(Track.artist),
+        joinedload(Play.track).joinedload(Track.album),
+        joinedload(Play.station)
+    ).all()
+
+    if not plays:
+        raise HTTPException(
+            status_code=404,
+            detail="No plays found"
+        )
+
+    # Calculate overall stats
+    total_plays = len(plays)
+    unique_tracks = len(set(play.track_id for play in plays))
+    unique_artists = len(set(play.track.artist_id for play in plays))
+    total_time = sum(play.track.duration or 0 for play in plays)
+    first_play = min(play.played_at for play in plays)
+    last_play = max(play.played_at for play in plays)
+
+    # Calculate top items (tracks, artists, albums, stations)
+    track_counts = {}
+    artist_counts = {}
+    album_counts = {}
+    station_counts = {}
+    hour_counts = {}
+    day_counts = {}
+    month_counts = {}
+    rating_counts = {rating: 0 for rating in Rating}
+
+    for play in plays:
+        # Track stats
+        track_id = play.track_id
+        if track_id not in track_counts:
+            track_counts[track_id] = {
+                'id': track_id,
+                'name': play.track.title,
+                'play_count': 0,
+                'last_played': play.played_at
+            }
+        track_counts[track_id]['play_count'] += 1
+        track_counts[track_id]['last_played'] = max(
+            track_counts[track_id]['last_played'],
+            play.played_at
+        )
+
+        # Artist stats
+        artist_id = play.track.artist_id
+        if artist_id not in artist_counts:
+            artist_counts[artist_id] = {
+                'id': artist_id,
+                'name': play.track.artist.name,
+                'play_count': 0,
+                'last_played': play.played_at
+            }
+        artist_counts[artist_id]['play_count'] += 1
+        artist_counts[artist_id]['last_played'] = max(
+            artist_counts[artist_id]['last_played'],
+            play.played_at
+        )
+
+        # Album stats
+        album_id = play.track.album_id
+        if album_id not in album_counts:
+            album_counts[album_id] = {
+                'id': album_id,
+                'name': play.track.album.title,
+                'play_count': 0,
+                'last_played': play.played_at
+            }
+        album_counts[album_id]['play_count'] += 1
+        album_counts[album_id]['last_played'] = max(
+            album_counts[album_id]['last_played'],
+            play.played_at
+        )
+
+        # Station stats
+        station_id = play.station_id
+        if station_id not in station_counts:
+            station_counts[station_id] = {
+                'id': station_id,
+                'name': play.station.name,
+                'play_count': 0,
+                'last_played': play.played_at
+            }
+        station_counts[station_id]['play_count'] += 1
+        station_counts[station_id]['last_played'] = max(
+            station_counts[station_id]['last_played'],
+            play.played_at
+        )
+
+        # Time stats
+        hour = play.played_at.hour
+        day = play.played_at.weekday()
+        month = play.played_at.month
+
+        hour_counts[hour] = hour_counts.get(hour, 0) + 1
+        day_counts[day] = day_counts.get(day, 0) + 1
+        month_counts[month] = month_counts.get(month, 0) + 1
+
+        # Rating stats
+        rating_counts[play.rating] += 1
+
+    return {
+        'overall': {
+            'total_plays': total_plays,
+            'unique_tracks': unique_tracks,
+            'unique_artists': unique_artists,
+            'total_time_seconds': total_time,
+            'first_play': first_play,
+            'last_play': last_play
+        },
+        'top_tracks': sorted(
+            track_counts.values(),
+            key=lambda x: (x['play_count'], x['last_played']),
+            reverse=True
+        )[:10],
+        'top_artists': sorted(
+            artist_counts.values(),
+            key=lambda x: (x['play_count'], x['last_played']),
+            reverse=True
+        )[:10],
+        'top_albums': sorted(
+            album_counts.values(),
+            key=lambda x: (x['play_count'], x['last_played']),
+            reverse=True
+        )[:10],
+        'top_stations': sorted(
+            station_counts.values(),
+            key=lambda x: (x['play_count'], x['last_played']),
+            reverse=True
+        )[:10],
+        'plays_by_hour': [
+            {'hour': hour, 'play_count': count}
+            for hour, count in sorted(hour_counts.items())
+        ],
+        'plays_by_day': [
+            {'day': day, 'play_count': count}
+            for day, count in sorted(day_counts.items())
+        ],
+        'plays_by_month': [
+            {'month': month, 'play_count': count}
+            for month, count in sorted(month_counts.items())
+        ],
+        'rating_distribution': [
+            {'rating': rating, 'play_count': count}
+            for rating, count in rating_counts.items()
+        ]
+    }
+
 def create_play(db: Session, play_data: PlayCreate, user_id: int) -> Play:
     """Create a new play record with all related entities."""
     # Get or create related entities

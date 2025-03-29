@@ -101,6 +101,42 @@ class PlayResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class TopItemStats(BaseModel):
+    id: int
+    name: str
+    play_count: int
+    last_played: datetime
+
+class TimeStats(BaseModel):
+    hour: int | None = None
+    day: int | None = None
+    month: int | None = None
+    year: int | None = None
+    play_count: int
+
+class RatingStats(BaseModel):
+    rating: Rating
+    play_count: int
+
+class OverallStats(BaseModel):
+    total_plays: int
+    unique_tracks: int
+    unique_artists: int
+    total_time_seconds: int
+    first_play: datetime
+    last_play: datetime
+
+class StatsResponse(BaseModel):
+    overall: OverallStats
+    top_tracks: list[TopItemStats]
+    top_artists: list[TopItemStats]
+    top_albums: list[TopItemStats]
+    top_stations: list[TopItemStats]
+    plays_by_hour: list[TimeStats]
+    plays_by_day: list[TimeStats]
+    plays_by_month: list[TimeStats]
+    rating_distribution: list[RatingStats]
+
 class PlayCreate(BaseModel):
     title: str
     artist: str

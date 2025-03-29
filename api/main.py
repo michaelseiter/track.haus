@@ -5,8 +5,11 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from database import get_db
-from schemas import PlayCreate, UserCreate, UserResponse, PlayResponse, VerifyEmailRequest, VerifyEmailResponse
+import schemas
+import crud
+from schemas import PlayCreate, UserCreate, UserResponse, PlayResponse, VerifyEmailRequest, VerifyEmailResponse, StatsResponse
 from crud import get_user_by_api_key, create_play, create_user, get_user_plays, get_user_by_email, verify_email, resend_verification
+from models import User
 from passlib.hash import bcrypt
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -199,6 +202,11 @@ async def resend_verification_email(
     user = resend_verification(db, user.id)
     send_verification_email(user.email, user.verification_token)
     return user
+
+@app.get("/api/stats", response_model=schemas.StatsResponse)
+async def get_stats(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get comprehensive stats for the current user."""
+    return crud.get_user_stats(db, current_user.id)
 
 @app.get("/plays", response_model=list[PlayResponse])
 async def get_plays(
