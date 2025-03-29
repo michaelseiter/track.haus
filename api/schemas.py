@@ -1,17 +1,39 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from typing import Optional
 from models import Rating
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(
+        min_length=8,
+        description="Password must be at least 8 characters and contain at least one letter and one number"
+    )
+    password_confirm: str | None = Field(
+        default=None,
+        description="Password confirmation for registration. Not required for login."
+    )
+
+    @field_validator('password')
+    def validate_password(cls, v: str) -> str:
+        if not any(c.isalpha() for c in v):
+            raise ValueError('Password must contain at least one letter')
+        if not any(c.isdigit() for c in v):
+            raise ValueError('Password must contain at least one number')
+        return v
+
+    @field_validator('password_confirm')
+    def passwords_match(cls, v: str | None, info) -> str | None:
+        if info.data.get('password') and v is not None and v != info.data['password']:
+            raise ValueError('Passwords do not match')
+        return v
 
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "email": "user@example.com",
-                "password": "strongpassword123"
+                "password": "strongpassword123",
+                "password_confirm": "strongpassword123"
             }
         }
     )
@@ -20,8 +42,16 @@ class UserResponse(BaseModel):
     email: str
     api_key: str
     created_at: datetime
+    is_verified: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+class VerifyEmailRequest(BaseModel):
+    token: str
+
+class VerifyEmailResponse(BaseModel):
+    message: str
+    is_verified: bool
 
 class ArtistResponse(BaseModel):
     id: int

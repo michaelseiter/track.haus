@@ -12,6 +12,9 @@ class Base(DeclarativeBase):
 def generate_api_key() -> str:
     return secrets.token_urlsafe(32)
 
+def generate_verification_token() -> str:
+    return secrets.token_urlsafe(32)
+
 class User(Base):
     __tablename__ = "users"
     __table_args__ = (
@@ -24,6 +27,9 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     api_key = Column(String, unique=True, nullable=False, default=generate_api_key)
     is_active = Column(Boolean, server_default=expression.true(), nullable=False)
+    is_verified = Column(Boolean, server_default=expression.false(), nullable=False)
+    verification_token = Column(String, unique=True, nullable=True)
+    verification_token_expires = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
     updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False)
     last_login_at = Column(DateTime, nullable=True)

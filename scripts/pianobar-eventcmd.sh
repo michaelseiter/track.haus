@@ -1,7 +1,7 @@
 #!/bin/bash
 
 API_URL="http://localhost:8000/track/play"
-API_KEY="2qhqGuY4ACHcp8V90twM0KFKTQqid6Hd3r3CHPP6cRk"  # From registration
+API_KEY="-qr-WAHu8HQhxT1FCD36kz9vd2RIbx65BVYqskYcLwE"  # From registration
 LOG_FILE="$HOME/.config/pianobar/track_haus.log"
 
 # Ensure log directory exists
@@ -50,8 +50,9 @@ if [ "$1" == "songfinish" ]; then
     fi
 
     # Send track data to FastAPI
-    response=$(curl -s -w "\n%{http_code}" -X POST "$API_URL?api_key=$API_KEY" \
+    response=$(curl -s -w "\n%{http_code}" -X POST "$API_URL" \
          -H "Content-Type: application/json" \
+         -H "X-API-Key: $API_KEY" \
          -d "{
            \"title\": \"$title\",
            \"artist\": \"$artist\",

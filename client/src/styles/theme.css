@@ -87,7 +87,6 @@ body {
   background: var(--surface-1);
   color: var(--text-1);
   line-height: 1.5;
-  margin-left: 270px; /* 30px less than the sidebar width */
   padding: var(--space-xl);
 }
 

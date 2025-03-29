@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { AuthService } from '../services/auth';
 
 @customElement('nav-bar')
 export class NavBar extends LitElement {
@@ -11,7 +12,7 @@ export class NavBar extends LitElement {
       top: 0;
       left: 0;
       bottom: 0;
-      width: 300px;
+      width: 270px;
       z-index: 100;
     }
 
@@ -49,6 +50,26 @@ export class NavBar extends LitElement {
       flex-direction: column;
       gap: var(--space-md);
       font-size: var(--font-size-md);
+      flex: 1;
+    }
+
+    .logout-button {
+      padding: var(--space-md);
+      background: var(--surface-2);
+      border: none;
+      border-radius: var(--radius-md);
+      color: var(--text-1);
+      cursor: pointer;
+      font-size: var(--font-size-md);
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      width: 100%;
+    }
+
+    .logout-button:hover {
+      background: var(--surface-3);
     }
 
     .nav-links a {
@@ -73,6 +94,11 @@ export class NavBar extends LitElement {
       text-shadow: 0 0 20px var(--cyber-teal);
     }
   `;
+
+  private handleLogout() {
+    AuthService.clearApiKey();
+    window.location.href = '/login';
+  }
 
   render() {
     const path = window.location.pathname;
@@ -100,6 +126,14 @@ export class NavBar extends LitElement {
             Stats
           </a>
         </nav>
+        <button class="logout-button" @click=${this.handleLogout}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Log out
+        </button>
       </div>
     `;
   }

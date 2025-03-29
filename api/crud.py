@@ -1,11 +1,11 @@
-from datetime import datetime, UTC
+from datetime import datetime, timedelta, UTC
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy import select
 from passlib.hash import bcrypt
 
 from fastapi import HTTPException
 
-from models import User, Artist, Album, Track, Station, Play, Rating
+from models import User, Artist, Album, Track, Station, Play, Rating, generate_verification_token
 from schemas import PlayCreate
 
 def create_user(db: Session, email: str, password: str) -> User:
@@ -17,12 +17,56 @@ def create_user(db: Session, email: str, password: str) -> User:
             detail="Email already registered"
         )
     
-    # Create new user
+    # Create new user with verification token
+    token = generate_verification_token()
     user = User(
         email=email,
-        password_hash=bcrypt.hash(password)
+        password_hash=bcrypt.hash(password),
+        verification_token=token,
+        verification_token_expires=datetime.now(UTC) + timedelta(hours=24)
     )
     db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def verify_email(db: Session, token: str) -> User:
+    """Verify a user's email using their verification token."""
+    user = db.query(User).filter(
+        User.verification_token == token,
+        User.verification_token_expires > datetime.now(UTC)
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired verification token"
+        )
+    
+    user.is_verified = True
+    user.verification_token = None
+    user.verification_token_expires = None
+    db.commit()
+    db.refresh(user)
+    return user
+
+def resend_verification(db: Session, user_id: int) -> User:
+    """Resend verification email by generating a new token."""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    
+    if user.is_verified:
+        raise HTTPException(
+            status_code=400,
+            detail="Email already verified"
+        )
+    
+    user.verification_token = generate_verification_token()
+    user.verification_token_expires = datetime.now(UTC) + timedelta(hours=24)
     db.commit()
     db.refresh(user)
     return user
@@ -30,6 +74,10 @@ def create_user(db: Session, email: str, password: str) -> User:
 def get_user_by_api_key(db: Session, api_key: str) -> User | None:
     """Get a user by their API key."""
     return db.query(User).filter(User.api_key == api_key).first()
+
+def get_user_by_email(db: Session, email: str) -> User | None:
+    """Get a user by their email."""
+    return db.query(User).filter(User.email == email).first()
 
 def get_or_create_artist(db: Session, name: str) -> Artist:
     """Get an artist by name or create if not exists."""

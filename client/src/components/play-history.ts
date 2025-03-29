@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { format } from 'date-fns';
+import { api } from '../services/api';
+import { Play } from '../types/play';
 
 // Make TypeScript happy with our custom elements
 declare global {
@@ -8,7 +10,6 @@ declare global {
     'play-history': PlayHistory;
   }
 }
-import { Play } from '../types/play';
 
 @customElement('play-history')
 export class PlayHistory extends LitElement {
@@ -25,6 +26,7 @@ export class PlayHistory extends LitElement {
     :host {
       display: block;
       padding: var(--space-md) 0;
+      margin-left: 300px;
     }
 
     .play-list {
@@ -147,36 +149,23 @@ export class PlayHistory extends LitElement {
       }
   `;
 
-  async connectedCallback() {
+  override async connectedCallback() {
     super.connectedCallback();
     await this.loadPlays();
   }
 
   private async loadPlays() {
     try {
-      // TODO: Replace with your API key from registration
-      const API_KEY = '2qhqGuY4ACHcp8V90twM0KFKTQqid6Hd3r3CHPP6cRk';
-      
       console.log('Fetching plays...');
-      const response = await fetch('http://localhost:8000/plays?api_key=' + API_KEY);
-      console.log('Response status:', response.status);
-      console.log('Response headers:', [...response.headers.entries()]);
+      const data = await api.getPlays();
+      console.log('Received plays:', data);
       
-      const text = await response.text();
-      console.log('Response text:', text);
-      
-      if (!response.ok) {
-        try {
-          const data = JSON.parse(text);
-          throw new Error(data.detail || 'Failed to load plays');
-        } catch (parseError) {
-          throw new Error(`Failed to load plays: ${text}`);
-        }
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid response format');
       }
-      
-      this.plays = JSON.parse(text);
-      console.log('Loaded plays:', this.plays);
-    } catch (e) {
+
+      this.plays = data;
+    } catch (e: unknown) {
       console.error('Error loading plays:', e);
       this.error = e instanceof Error ? e.message : 'Unknown error';
     } finally {
@@ -188,16 +177,16 @@ export class PlayHistory extends LitElement {
     return format(new Date(dateStr + 'Z'), 'MMM d, yyyy h:mm a');
   }
 
-  private getRatingEmoji(rating: Play['rating']) {
-    switch (rating.toUpperCase()) {
-      case 'LIKE': return html`<img src="/public/cyber-heart.svg" alt="Like" style="width: 48px; height: 48px; vertical-align: middle;">`;
-      case 'BAN': return html`<img src="/public/cyber-ban.svg" alt="Ban" style="width: 48px; height: 48px; vertical-align: middle;">`;
-      case 'TIRED': return html`<img src="/public/cyber-tired.svg" alt="Tired" style="width: 48px; height: 48px; vertical-align: middle;">`;
-      default: return '';
+  private getRatingEmoji(rating: Play['rating']): ReturnType<typeof html> {
+    switch (rating?.toUpperCase()) {
+      case 'LIKE': return html`<img src="/cyber-heart.svg" alt="Like" style="width: 24px; height: 24px; vertical-align: middle;">`;
+      case 'BAN': return html`<img src="/cyber-ban.svg" alt="Ban" style="width: 24px; height: 24px; vertical-align: middle;">`;
+      case 'TIRED': return html`<img src="/cyber-tired.svg" alt="Tired" style="width: 24px; height: 24px; vertical-align: middle;">`;
+      default: return html``;
     }
   }
 
-  render() {
+  override render() {
     if (this.loading) {
       return html`<div class="loading">Loading...</div>`;
     }
