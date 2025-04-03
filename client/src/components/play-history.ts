@@ -177,9 +177,9 @@ export class PlayHistory extends LitElement {
 
   private getRatingEmoji(rating: Play['rating']): ReturnType<typeof html> {
     switch (rating?.toUpperCase()) {
-      case 'LIKE': return html`<img src="/cyber-heart.svg" alt="Like" style="width: 24px; height: 24px; vertical-align: middle;">`;
-      case 'BAN': return html`<img src="/cyber-ban.svg" alt="Ban" style="width: 24px; height: 24px; vertical-align: middle;">`;
-      case 'TIRED': return html`<img src="/cyber-tired.svg" alt="Tired" style="width: 24px; height: 24px; vertical-align: middle;">`;
+      case 'LIKE': return html`<img src="/images/cyber-heart.svg" alt="Like" style="width: 24px; height: 24px; vertical-align: middle;">`;
+      case 'BAN': return html`<img src="/images/cyber-ban.svg" alt="Ban" style="width: 24px; height: 24px; vertical-align: middle;">`;
+      case 'TIRED': return html`<img src="/images/cyber-tired.svg" alt="Tired" style="width: 24px; height: 24px; vertical-align: middle;">`;
       default: return html``;
     }
   }

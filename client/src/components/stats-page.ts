@@ -70,6 +70,13 @@ export class StatsPage extends LitElement {
       box-shadow: var(--shadow-md);
     }
 
+    .card-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
     .card h2 {
       margin: 0 0 var(--space-md);
       color: var(--toxic-green);
@@ -185,12 +192,15 @@ export class StatsPage extends LitElement {
   private renderTopItems(title: string, items: TopItem[]) {
     return html`
       <div class="card">
-        <h2>${title}</h2>
+        <div class="card-heading">
+          <h2>${title}</h2>
+          <div>Plays</div>
+        </div>
         ${items.map(
           (item) => html`
             <div class="stat">
               <span class="stat-label">${item.name}</span>
-              <span class="stat-value">${item.play_count} plays</span>
+              <span class="stat-value">${item.play_count}</span>
             </div>
           `
         )}
@@ -201,7 +211,10 @@ export class StatsPage extends LitElement {
   private renderTimeStats(title: string, stats: TimeStats[]) {
     return html`
       <div class="card">
-        <h2>${title}</h2>
+        <div class="card-heading">
+          <h2>${title}</h2>
+          <div>Plays</div>
+        </div>
         ${stats.map(
           (stat) => html`
             <div class="stat">
@@ -212,7 +225,7 @@ export class StatsPage extends LitElement {
                   ? this.formatDay(stat.day)
                   : this.formatMonth(stat.month)}
               </span>
-              <span class="stat-value">${stat.play_count} plays</span>
+              <span class="stat-value">${stat.play_count}</span>
             </div>
           `
         )}
@@ -226,7 +239,10 @@ export class StatsPage extends LitElement {
 
     return html`
       <div class="card">
-        <h2>Ratings</h2>
+        <div class="card-heading">
+          <h2>Ratings</h2>
+          <div>Plays</div>
+        </div>
         ${rating_distribution.map(
           (stat) => html`
             <div class="stat">

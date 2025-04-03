@@ -55,10 +55,10 @@ export class NavBar extends LitElement {
 
     .logout-button {
       padding: var(--space-md);
-      background: var(--surface-2);
+      background: transparent;
       border: none;
       border-radius: var(--radius-md);
-      color: var(--text-1);
+      color: var(--text-2);
       cursor: pointer;
       font-size: var(--font-size-md);
       transition: background-color 0.2s ease;
@@ -69,7 +69,7 @@ export class NavBar extends LitElement {
     }
 
     .logout-button:hover {
-      background: var(--surface-3);
+      color: var(--text-1);
     }
 
     .nav-links a {
@@ -106,7 +106,7 @@ export class NavBar extends LitElement {
     return html`
       <div class="nav-content">
         <a href="/" class="logo">
-          <img src="/public/track-haus-mark.svg" alt="Track Haus">
+          <img src="/images/track-haus-mark.svg" alt="Track Haus">
         </a>
         <nav class="nav-links">
           <a href="/" class="${path === '/' ? 'active' : ''}">
