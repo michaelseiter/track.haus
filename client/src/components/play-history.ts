@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { Task } from '@lit/task';
+import { customElement } from 'lit/decorators.js';
 import { format } from 'date-fns';
 import { api } from '../services/api';
 import { Play } from '../types/play';
@@ -14,14 +15,6 @@ declare global {
 
 @customElement('play-history')
 export class PlayHistory extends LitElement {
-  @state()
-  private plays: Play[] = [];
-
-  @state()
-  private loading = true;
-
-  @state()
-  private error: string | null = null;
 
   static styles = css`
     :host {
@@ -147,29 +140,24 @@ export class PlayHistory extends LitElement {
       }
   `;
 
-  override async connectedCallback() {
-    super.connectedCallback();
-    await this.loadPlays();
-  }
+  #loadPlaysTask = new Task(this, {
+    task: async () => {
+      try {
+        const data = await api.getPlays();
 
-  private async loadPlays() {
-    try {
-      console.log('Fetching plays...');
-      const data = await api.getPlays();
-      console.log('Received plays:', data);
-      
-      if (!Array.isArray(data)) {
-        throw new Error('Invalid response format');
+        if (!Array.isArray(data)) {
+          throw new Error('Invalid response format');
+        }
+
+        return data;
+      } catch (e: unknown) {
+        throw e;
       }
+    },
+    args: () => [],
+  },
+);
 
-      this.plays = data;
-    } catch (e: unknown) {
-      console.error('Error loading plays:', e);
-      this.error = e instanceof Error ? e.message : 'Unknown error';
-    } finally {
-      this.loading = false;
-    }
-  }
 
   private formatDate(dateStr: string): string {
     return format(new Date(dateStr + 'Z'), 'MMM d, yyyy h:mm a');
@@ -184,22 +172,14 @@ export class PlayHistory extends LitElement {
     }
   }
 
-  override render() {
-    if (this.loading) {
-      return html`<div class="loading">Loading...</div>`;
-    }
-
-    if (this.error) {
-      return html`<div class="error">${this.error}</div>`;
-    }
-
+  render() {
     return html`
-      <div class="play-list">
       <h1>Plays</h1>
-        ${this.plays.map(play => html`
-          <div class="play-item">
-            <div class="play-content">
-              <div class="primary-info">
+      ${this.#loadPlaysTask.render({
+        pending: () => html`Loading plays...`,
+        complete: (plays) => html`${plays.map(play => html`<div class="play-item">
+              <div class="play-content">
+                <div class="primary-info">
                 <div class="track-title">${play.track.title}</div>
                 <div class="artist">by ${play.track.artist.name}</div>
               </div>
@@ -209,16 +189,16 @@ export class PlayHistory extends LitElement {
                 <div class="station">${play.station.name}</div>
                 <div>•</div>
                 <div>${this.formatDate(play.created_at)}</div>
-                ${play.duration ? html`
-                  <div>•</div>
+                ${play.duration ? html`<div>•</div>
                   <div>${formatDuration(play.duration)}</div>
                 ` : ''}
               </div>
             </div>
             <div class="rating ${play.rating}">${this.getRatingEmoji(play.rating)}</div>
           </div>
-        `)}
-      </div>
+        `)}`,
+        error: (error: unknown) => html`<div class="error">${error instanceof Error ? error.message : String(error)}</div>`,
+      })}
     `;
   }
 }
