@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { Task } from '@lit/task';
 import { customElement } from 'lit/decorators.js';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { api } from '../services/api';
 import { Play } from '../types/play';
 import { formatDuration } from '../utils/formatters';
@@ -160,7 +160,8 @@ export class PlayHistory extends LitElement {
 
 
   private formatDate(dateStr: string): string {
-    return format(new Date(dateStr + 'Z'), 'MMM d, yyyy h:mm a');
+    const date = parseISO(dateStr + 'Z');
+    return format(date, 'PPPPp');
   }
 
   private getRatingEmoji(rating: Play['rating']): ReturnType<typeof html> {
