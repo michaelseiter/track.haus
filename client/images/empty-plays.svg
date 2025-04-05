@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background glow effects -->
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="4" result="blur" />
+    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+  </filter>
+  
+  <!-- Vinyl record base -->
+  <circle cx="120" cy="120" r="90" fill="#1A1025" stroke="#8A2BE2" stroke-width="2" />
+  <circle cx="120" cy="120" r="85" fill="none" stroke="#FF00FF" stroke-width="1" stroke-opacity="0.4" />
+  <circle cx="120" cy="120" r="70" fill="none" stroke="#00FFFF" stroke-width="1" stroke-opacity="0.4" />
+  <circle cx="120" cy="120" r="55" fill="none" stroke="#FF00FF" stroke-width="1" stroke-opacity="0.4" />
+  <circle cx="120" cy="120" r="40" fill="none" stroke="#00FFFF" stroke-width="1" stroke-opacity="0.4" />
+  <circle cx="120" cy="120" r="25" fill="none" stroke="#FF00FF" stroke-width="1" stroke-opacity="0.4" />
+  <circle cx="120" cy="120" r="15" fill="#1A1025" stroke="#39FF14" stroke-width="2" />
+  
+  <!-- Center hole -->
+  <circle cx="120" cy="120" r="5" fill="#39FF14" filter="url(#glow)" />
+  
+  <!-- Music note elements -->
+  <g transform="translate(85, 70) scale(0.8)" opacity="0.6">
+    <!-- Music note 1 -->
+    <path d="M30 80 L30 30 L60 20 L60 70 C60 75 55 80 50 80 S40 75 40 70 S45 60 50 60 S60 65 60 70" fill="none" stroke="#FF00FF" stroke-width="3" />
+    <ellipse cx="40" cy="70" rx="10" ry="7" fill="#FF00FF" opacity="0.5" />
+    
+    <!-- Music note 2 -->
+    <path d="M80 90 L80 40 L110 30 L110 80 C110 85 105 90 100 90 S90 85 90 80 S95 70 100 70 S110 75 110 80" fill="none" stroke="#00FFFF" stroke-width="3" />
+    <ellipse cx="90" cy="80" rx="10" ry="7" fill="#00FFFF" opacity="0.5" />
+  </g>
+  
+  <!-- Decorative elements -->
+  <path d="M120 30 V50 M120 190 V210" stroke="#39FF14" stroke-width="2" stroke-opacity="0.7" />
+  <path d="M30 120 H50 M190 120 H210" stroke="#39FF14" stroke-width="2" stroke-opacity="0.7" />
+  
+  <!-- Pause symbol overlay -->
+  <rect x="105" cy="100" width="10" height="40" rx="2" fill="#39FF14" opacity="0.4" />
+  <rect x="125" cy="100" width="10" height="40" rx="2" fill="#39FF14" opacity="0.4" />
+</svg>
