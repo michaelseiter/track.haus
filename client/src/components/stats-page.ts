@@ -1,7 +1,8 @@
 import { LitElement, html, css } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { formatDuration, formatDate } from "../utils/formatters";
-import { api } from "../services/api";
+import { createFetchStatsTask } from "@/tasks/fetch-stats-task";
+import "./empty-state";
 
 interface TopItem {
   id: number;
@@ -43,9 +44,6 @@ interface Stats {
 
 @customElement("stats-page")
 export class StatsPage extends LitElement {
-  @state() private stats?: Stats;
-  @state() private error?: string;
-  @state() private loading = true;
 
   static styles = css`
     :host {
@@ -106,9 +104,14 @@ export class StatsPage extends LitElement {
     }
 
     .error {
-      color: var(--color-error);
+      color: var(--error);
       padding: var(--space-md);
+      border: 1px solid var(--error);
+      border-radius: var(--radius-sm);
+      margin: var(--space-md) 0;
       text-align: center;
+      background: rgba(255, 0, 127, 0.1);
+      box-shadow: var(--glow-sm);
     }
 
     .loading {
@@ -116,26 +119,13 @@ export class StatsPage extends LitElement {
       color: var(--color-text-muted);
       padding: var(--space-xl);
     }
+    
+
   `;
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.loadStats();
-  }
+  #fetchStats = createFetchStatsTask(this);
 
-  private async loadStats() {
-    try {
-      this.stats = await api.getStats();
-      this.error = undefined;
-    } catch (err) {
-      this.error = "Failed to load stats. Please try again later.";
-      console.error("Failed to load stats:", err);
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  private formatHour(hour: number | null | undefined) {
+  #formatHour(hour: number | null | undefined) {
     if (hour === null || hour === undefined) return '--:00 AM';
     // Convert UTC hour to local time
     const localHour = ((hour - new Date().getTimezoneOffset() / 60) + 24) % 24;
@@ -144,20 +134,17 @@ export class StatsPage extends LitElement {
     return `${hour12}:00 ${ampm}`;
   }
 
-  private formatDay(day: number | null | undefined) {
+  #formatDay(day: number | null | undefined) {
     if (day === null || day === undefined) return '--';
     return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][day];
   }
 
-  private formatMonth(month: number | null | undefined) {
+  #formatMonth(month: number | null | undefined) {
     if (month === null || month === undefined) return '--';
     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1];
   }
 
-  private renderOverallStats() {
-    if (!this.stats) return null;
-    const { overall } = this.stats;
-
+  #renderOverallStats(overall: Stats['overall']) {
     return html`
       <div class="card">
         <h2>Overall Stats</h2>
@@ -189,7 +176,7 @@ export class StatsPage extends LitElement {
     `;
   }
 
-  private renderTopItems(title: string, items: TopItem[]) {
+  #renderTopItems(title: string, items: TopItem[]) {
     return html`
       <div class="card">
         <div class="card-heading">
@@ -197,18 +184,18 @@ export class StatsPage extends LitElement {
           <div>Plays</div>
         </div>
         ${items.map(
-          (item) => html`
+      (item) => html`
             <div class="stat">
               <span class="stat-label">${item.name}</span>
               <span class="stat-value">${item.play_count}</span>
             </div>
           `
-        )}
+    )}
       </div>
     `;
   }
 
-  private renderTimeStats(title: string, stats: TimeStats[]) {
+  #renderTimeStats(title: string, stats: TimeStats[]) {
     return html`
       <div class="card">
         <div class="card-heading">
@@ -216,27 +203,24 @@ export class StatsPage extends LitElement {
           <div>Plays</div>
         </div>
         ${stats.map(
-          (stat) => html`
+      (stat) => html`
             <div class="stat">
               <span class="stat-label">
                 ${stat.hour !== null && stat.hour !== undefined
-                  ? this.formatHour(stat.hour)
-                  : stat.day !== null && stat.day !== undefined
-                  ? this.formatDay(stat.day)
-                  : this.formatMonth(stat.month)}
+          ? this.#formatHour(stat.hour)
+          : stat.day !== null && stat.day !== undefined
+            ? this.#formatDay(stat.day)
+            : this.#formatMonth(stat.month)}
               </span>
               <span class="stat-value">${stat.play_count}</span>
             </div>
           `
-        )}
+    )}
       </div>
     `;
   }
 
-  private renderRatingStats() {
-    if (!this.stats) return null;
-    const { rating_distribution } = this.stats;
-
+  #renderRatingStats(rating_distribution: RatingStats[]) {
     return html`
       <div class="card">
         <div class="card-heading">
@@ -244,43 +228,56 @@ export class StatsPage extends LitElement {
           <div>Plays</div>
         </div>
         ${rating_distribution.map(
-          (stat) => html`
+      (stat) => html`
             <div class="stat">
               <span class="stat-label">${stat.rating}</span>
               <span class="stat-value">${stat.play_count}</span>
             </div>
           `
-        )}
+    )}
       </div>
+    `;
+  }
+
+  #renderEmptyState() {
+    return html`
+      <empty-state
+        title="No listening data yet"
+        message="Start playing some music to see your stats here!"
+        icon="/images/empty-stats.svg"
+      ></empty-state>
     `;
   }
 
   render() {
-    if (this.loading) {
-      return html`<div class="loading">Loading stats...</div>`;
-    }
-
-    if (this.error) {
-      return html`<div class="error">${this.error}</div>`;
-    }
-
-    if (!this.stats) {
-      return html`<div class="error">No stats available</div>`;
-    }
-
     return html`
       <h1>Stats</h1>
-      <div class="grid">
-        ${this.renderOverallStats()}
-        ${this.renderTopItems("Top Stations", this.stats.top_stations)}
-        ${this.renderTopItems("Top Artists", this.stats.top_artists)}
-        ${this.renderTopItems("Top Albums", this.stats.top_albums)}
-        ${this.renderTopItems("Top Tracks", this.stats.top_tracks)}
-        ${this.renderTimeStats("Plays by Hour", this.stats.plays_by_hour)}
-        ${this.renderTimeStats("Plays by Day", this.stats.plays_by_day)}
-        ${this.renderTimeStats("Plays by Month", this.stats.plays_by_month)}
-        ${this.renderRatingStats()}
-      </div>
+
+      ${this.#fetchStats.render({
+        pending: () => html`<div class="loading">Loading stats...</div>`,
+        error: (err) => html`<div class="error">Failed to load stats: ${err}</div>`,
+        complete: (stats) => {
+          // Check if there's any play data
+          if (!stats || stats.overall.total_plays === 0) {
+            return this.#renderEmptyState();
+          }
+          
+          return html`
+            <div class="grid">
+              ${this.#renderOverallStats(stats.overall)}
+              ${this.#renderTopItems("Top Stations", stats.top_stations)}
+              ${this.#renderTopItems("Top Artists", stats.top_artists)}
+              ${this.#renderTopItems("Top Albums", stats.top_albums)}
+              ${this.#renderTopItems("Top Tracks", stats.top_tracks)}
+              ${this.#renderTimeStats("Plays by Hour", stats.plays_by_hour)}
+              ${this.#renderTimeStats("Plays by Day", stats.plays_by_day)}
+              ${this.#renderTimeStats("Plays by Month", stats.plays_by_month)}
+              ${this.#renderRatingStats(stats.rating_distribution)}
+            </div>
+          `;
+        },
+      })}
     `;
   }
+
 }

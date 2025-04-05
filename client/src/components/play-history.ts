@@ -5,13 +5,8 @@ import { format, parseISO } from 'date-fns';
 import { api } from '../services/api';
 import { Play } from '../types/play';
 import { formatDuration } from '../utils/formatters';
-
-// Make TypeScript happy with our custom elements
-declare global {
-  interface HTMLElementTagNameMap {
-    'play-history': PlayHistory;
-  }
-}
+import './empty-state';
+import { createFetchPlaysTask } from '@/tasks/fetch-plays-task';
 
 @customElement('play-history')
 export class PlayHistory extends LitElement {
@@ -137,34 +132,19 @@ export class PlayHistory extends LitElement {
     .cyber-tired {
       fill: var(--plasma-purple);
       stroke: var(--plasma-purple);
-      }
+    }
+    
+
   `;
 
-  #loadPlaysTask = new Task(this, {
-    task: async () => {
-      try {
-        const data = await api.getPlays();
+  #fetchPlays = createFetchPlaysTask(this);
 
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid response format');
-        }
-
-        return data;
-      } catch (e: unknown) {
-        throw e;
-      }
-    },
-    args: () => [],
-  },
-);
-
-
-  private formatDate(dateStr: string): string {
+  #formatDate(dateStr: string): string {
     const date = parseISO(dateStr + 'Z');
     return format(date, 'PPPPp');
   }
 
-  private getRatingEmoji(rating: Play['rating']): ReturnType<typeof html> {
+  #getRatingEmoji(rating: Play['rating']): ReturnType<typeof html> {
     switch (rating?.toUpperCase()) {
       case 'LIKE': return html`<img src="/images/cyber-heart.svg" alt="Like" style="width: 24px; height: 24px; vertical-align: middle;">`;
       case 'BAN': return html`<img src="/images/cyber-ban.svg" alt="Ban" style="width: 24px; height: 24px; vertical-align: middle;">`;
@@ -173,33 +153,53 @@ export class PlayHistory extends LitElement {
     }
   }
 
+  #renderEmptyState() {
+    return html`
+      <empty-state
+        title="No listening history yet"
+        message="Your play history will appear here once you start listening to music."
+        icon="/images/empty-plays.svg"
+      ></empty-state>
+    `;
+  }
+
   render() {
     return html`
       <h1>Plays</h1>
-      ${this.#loadPlaysTask.render({
-        pending: () => html`Loading plays...`,
-        complete: (plays) => html`${plays.map(play => html`<div class="play-item">
-              <div class="play-content">
-                <div class="primary-info">
-                <div class="track-title">${play.track.title}</div>
-                <div class="artist">by ${play.track.artist.name}</div>
+      ${this.#fetchPlays.render({
+      pending: () => html`<div class="loading">Loading plays...</div>`,
+      error: (err) => html`<div class="error">Failed to load plays: ${err}</div>`,
+      complete: (plays) => {
+        if (!plays || plays.length === 0) {
+          return this.#renderEmptyState();
+        }
+
+        return html`
+            <div class="play-list">
+              ${plays.map(play => html`<div class="play-item">
+                <div class="play-content">
+                  <div class="primary-info">
+                    <div class="track-title">${play.track.title}</div>
+                    <div class="artist">by ${play.track.artist.name}</div>
+                  </div>
+                  <div class="secondary-info">
+                    <div class="album">${play.track.album.title}</div>
+                    <div>•</div>
+                    <div class="station">${play.station.name}</div>
+                    <div>•</div>
+                    <div>${this.#formatDate(play.created_at)}</div>
+                    ${play.duration ? html`<div>•</div>
+                      <div>${formatDuration(play.duration)}</div>
+                    ` : ''}
+                  </div>
+                </div>
+                <div class="rating ${play.rating}">${this.#getRatingEmoji(play.rating)}</div>
               </div>
-              <div class="secondary-info">
-                <div class="album">${play.track.album.title}</div>
-                <div>•</div>
-                <div class="station">${play.station.name}</div>
-                <div>•</div>
-                <div>${this.formatDate(play.created_at)}</div>
-                ${play.duration ? html`<div>•</div>
-                  <div>${formatDuration(play.duration)}</div>
-                ` : ''}
-              </div>
+            `)}
             </div>
-            <div class="rating ${play.rating}">${this.getRatingEmoji(play.rating)}</div>
-          </div>
-        `)}`,
-        error: (error: unknown) => html`<div class="error">${error instanceof Error ? error.message : String(error)}</div>`,
-      })}
+          `;
+      },
+    })}
     `;
   }
 }
