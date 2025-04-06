@@ -98,7 +98,7 @@ export class TrackList extends LitElement {
 
   private initializeSSE() {
     this.eventSource = new EventSource('http://localhost:8000/tracks/live');
-    
+
     this.eventSource.onmessage = (event) => {
       const track = JSON.parse(event.data);
       this.currentTrack = track;
@@ -118,29 +118,30 @@ export class TrackList extends LitElement {
         <h3>${track.title}</h3>
         <p class="artist">${track.artist}</p>
         <p class="album">${track.album}</p>
-        ${isCurrent 
+        ${isCurrent
           ? html`<p class="station">on ${track.station}</p>`
           : html`<p class="meta">
               <span class="station">${track.station}</span>
               <span class="time">${formatDistanceToNow(new Date(track.played_at))} ago</span>
-            </p>`
-        }
+            </p>`}
       </div>
     `;
   }
 
   render() {
     return html`
-      ${this.currentTrack ? html`
-        <section class="now-playing">
-          <h2>Now Playing</h2>
-          ${this.renderTrackCard(this.currentTrack, true)}
-        </section>
-      ` : ''}
+      ${this.currentTrack
+        ? html`
+            <section class="now-playing">
+              <h2>Now Playing</h2>
+              ${this.renderTrackCard(this.currentTrack, true)}
+            </section>
+          `
+        : ''}
 
       <section class="recent-tracks">
         <h2>Recent Tracks</h2>
-        ${this.recentTracks.map(track => this.renderTrackCard(track))}
+        ${this.recentTracks.map((track) => this.renderTrackCard(track))}
       </section>
     `;
   }

@@ -113,18 +113,24 @@ export class VerifyPage extends LitElement {
         <img src="/public/track-haus-mark.svg" alt="Track Haus" />
       </div>
       <div class="verify-container">
-        ${this.loading ? html`
-          <p>Verifying your email...</p>
-        ` : this.error ? html`
-          <div class="error">${this.error}</div>
-          <p>Please try again or contact support if the problem persists.</p>
-        ` : this.verified ? html`
-          <div class="success">Email verified successfully!</div>
-          <p>You can now <a href="/login" class="text-button">log in</a> to your account.</p>
-        ` : html`
-          <div class="error">Something went wrong</div>
-          <p>Please try again or contact support if the problem persists.</p>
-        `}
+        ${this.loading
+          ? html` <p>Verifying your email...</p> `
+          : this.error
+            ? html`
+                <div class="error">${this.error}</div>
+                <p>Please try again or contact support if the problem persists.</p>
+              `
+            : this.verified
+              ? html`
+                  <div class="success">Email verified successfully!</div>
+                  <p>
+                    You can now <a href="/login" class="text-button">log in</a> to your account.
+                  </p>
+                `
+              : html`
+                  <div class="error">Something went wrong</div>
+                  <p>Please try again or contact support if the problem persists.</p>
+                `}
       </div>
     `;
   }

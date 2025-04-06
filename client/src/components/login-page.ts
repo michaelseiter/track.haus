@@ -145,7 +145,7 @@ export class LoginPage extends LitElement {
     const form = e.target as HTMLFormElement;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
-    const passwordConfirm = !this.isLogin 
+    const passwordConfirm = !this.isLogin
       ? (form.elements.namedItem('password_confirm') as HTMLInputElement).value
       : undefined;
 
@@ -159,10 +159,10 @@ export class LoginPage extends LitElement {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          email, 
+        body: JSON.stringify({
+          email,
           password,
-          password_confirm: passwordConfirm
+          password_confirm: passwordConfirm,
         }),
       });
 
@@ -188,9 +188,10 @@ export class LoginPage extends LitElement {
         window.location.href = '/';
       }
     } catch (e) {
-      const message = e instanceof Error ? e.message : `${this.isLogin ? 'Login' : 'Registration'} failed`;
+      const message =
+        e instanceof Error ? e.message : `${this.isLogin ? 'Login' : 'Registration'} failed`;
       this.error = message;
-      
+
       // Save email if verification needed
       if (message.includes('verify your email')) {
         const emailInput = this.shadowRoot?.querySelector<HTMLInputElement>('#email');
@@ -205,7 +206,7 @@ export class LoginPage extends LitElement {
 
   private async handleResendVerification() {
     if (!this.lastEmail) return;
-    
+
     this.resendingVerification = true;
     try {
       const response = await fetch('http://localhost:8000/auth/resend-verification', {
@@ -237,20 +238,24 @@ export class LoginPage extends LitElement {
         <img src="/public/track-haus-mark.svg" alt="Track Haus" />
       </div>
       <div class="login-container">
-        ${this.error ? html`
-          <div class="error">
-            ${this.error}
-            ${this.lastEmail && this.error.includes('verify your email') ? html`
-              <button
-                class="text-button"
-                @click=${this.handleResendVerification}
-                ?disabled=${this.resendingVerification}
-              >
-                ${this.resendingVerification ? 'Sending...' : 'Resend verification email'}
-              </button>
-            ` : ''}
-          </div>
-        ` : ''}
+        ${this.error
+          ? html`
+              <div class="error">
+                ${this.error}
+                ${this.lastEmail && this.error.includes('verify your email')
+                  ? html`
+                      <button
+                        class="text-button"
+                        @click=${this.handleResendVerification}
+                        ?disabled=${this.resendingVerification}
+                      >
+                        ${this.resendingVerification ? 'Sending...' : 'Resend verification email'}
+                      </button>
+                    `
+                  : ''}
+              </div>
+            `
+          : ''}
         <form @submit=${this.handleSubmit}>
           <div class="form-group">
             <label for="email">Email</label>
@@ -260,26 +265,27 @@ export class LoginPage extends LitElement {
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required />
           </div>
-          ${!this.isLogin ? html`
-            <div class="form-group">
-              <label for="password-confirm">Confirm Password</label>
-              <input type="password" id="password-confirm" name="password_confirm" required />
-            </div>
-          ` : ''}
+          ${!this.isLogin
+            ? html`
+                <div class="form-group">
+                  <label for="password-confirm">Confirm Password</label>
+                  <input type="password" id="password-confirm" name="password_confirm" required />
+                </div>
+              `
+            : ''}
           <button type="submit" ?disabled=${this.loading}>
-            ${this.loading 
-              ? (this.isLogin ? 'Logging in...' : 'Registering...') 
-              : (this.isLogin ? 'Log in' : 'Register')}
+            ${this.loading
+              ? this.isLogin
+                ? 'Logging in...'
+                : 'Registering...'
+              : this.isLogin
+                ? 'Log in'
+                : 'Register'}
           </button>
         </form>
         <div class="toggle-mode">
-          <button 
-            class="text-button" 
-            @click=${() => this.isLogin = !this.isLogin}
-          >
-            ${this.isLogin 
-              ? 'Need an account? Register' 
-              : 'Already have an account? Log in'}
+          <button class="text-button" @click=${() => (this.isLogin = !this.isLogin)}>
+            ${this.isLogin ? 'Need an account? Register' : 'Already have an account? Log in'}
           </button>
         </div>
       </div>

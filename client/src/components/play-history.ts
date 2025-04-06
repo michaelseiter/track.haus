@@ -1,16 +1,14 @@
 import { LitElement, html, css } from 'lit';
-import { Task } from '@lit/task';
 import { customElement } from 'lit/decorators.js';
 import { format, parseISO } from 'date-fns';
-import { api } from '../services/api';
 import { Play } from '../types/play';
 import { formatDuration } from '../utils/formatters';
 import './empty-state';
+import './loading-state';
 import { createFetchPlaysTask } from '@/tasks/fetch-plays-task';
 
 @customElement('play-history')
 export class PlayHistory extends LitElement {
-
   static styles = css`
     :host {
       display: block;
@@ -123,18 +121,10 @@ export class PlayHistory extends LitElement {
       box-shadow: var(--glow-sm);
     }
 
-    .loading {
-      text-align: center;
-      padding: var(--space-xl);
-      color: var(--text-2);
-    }
-
     .cyber-tired {
       fill: var(--plasma-purple);
       stroke: var(--plasma-purple);
     }
-    
-
   `;
 
   #fetchPlays = createFetchPlaysTask(this);
@@ -146,10 +136,26 @@ export class PlayHistory extends LitElement {
 
   #getRatingEmoji(rating: Play['rating']): ReturnType<typeof html> {
     switch (rating?.toUpperCase()) {
-      case 'LIKE': return html`<img src="/images/cyber-heart.svg" alt="Like" style="width: 24px; height: 24px; vertical-align: middle;">`;
-      case 'BAN': return html`<img src="/images/cyber-ban.svg" alt="Ban" style="width: 24px; height: 24px; vertical-align: middle;">`;
-      case 'TIRED': return html`<img src="/images/cyber-tired.svg" alt="Tired" style="width: 24px; height: 24px; vertical-align: middle;">`;
-      default: return html``;
+      case 'LIKE':
+        return html`<img
+          src="/images/cyber-heart.svg"
+          alt="Like"
+          style="width: 24px; height: 24px; vertical-align: middle;"
+        />`;
+      case 'BAN':
+        return html`<img
+          src="/images/cyber-ban.svg"
+          alt="Ban"
+          style="width: 24px; height: 24px; vertical-align: middle;"
+        />`;
+      case 'TIRED':
+        return html`<img
+          src="/images/cyber-tired.svg"
+          alt="Tired"
+          style="width: 24px; height: 24px; vertical-align: middle;"
+        />`;
+      default:
+        return html``;
     }
   }
 
@@ -166,40 +172,43 @@ export class PlayHistory extends LitElement {
   render() {
     return html`
       <h1>Plays</h1>
-      ${this.#fetchPlays.render({
-      pending: () => html`<div class="loading">Loading plays...</div>`,
-      error: (err) => html`<div class="error">Failed to load plays: ${err}</div>`,
-      complete: (plays) => {
-        if (!plays || plays.length === 0) {
-          return this.#renderEmptyState();
-        }
+      <div class="play-list">
+        ${this.#fetchPlays.render({
+          pending: () => html`<loading-state />`,
+          error: (err) => html`<div class="error">Failed to load plays: ${err}</div>`,
+          complete: (plays) => {
+            if (!plays || plays.length === 0) {
+              return this.#renderEmptyState();
+            }
 
-        return html`
-            <div class="play-list">
-              ${plays.map(play => html`<div class="play-item">
-                <div class="play-content">
-                  <div class="primary-info">
-                    <div class="track-title">${play.track.title}</div>
-                    <div class="artist">by ${play.track.artist.name}</div>
-                  </div>
-                  <div class="secondary-info">
-                    <div class="album">${play.track.album.title}</div>
-                    <div>•</div>
-                    <div class="station">${play.station.name}</div>
-                    <div>•</div>
-                    <div>${this.#formatDate(play.created_at)}</div>
-                    ${play.duration ? html`<div>•</div>
-                      <div>${formatDuration(play.duration)}</div>
-                    ` : ''}
-                  </div>
-                </div>
-                <div class="rating ${play.rating}">${this.#getRatingEmoji(play.rating)}</div>
-              </div>
-            `)}
-            </div>
-          `;
-      },
-    })}
+            return html`
+              ${plays.map(
+                (play) =>
+                  html`<div class="play-item">
+                    <div class="play-content">
+                      <div class="primary-info">
+                        <div class="track-title">${play.track.title}</div>
+                        <div class="artist">by ${play.track.artist.name}</div>
+                      </div>
+                      <div class="secondary-info">
+                        <div class="album">${play.track.album.title}</div>
+                        <div>•</div>
+                        <div class="station">${play.station.name}</div>
+                        <div>•</div>
+                        <div>${this.#formatDate(play.created_at)}</div>
+                        ${play.duration
+                          ? html`<div>•</div>
+                              <div>${formatDuration(play.duration)}</div> `
+                          : ''}
+                      </div>
+                    </div>
+                    <div class="rating ${play.rating}">${this.#getRatingEmoji(play.rating)}</div>
+                  </div> `
+              )}
+            `;
+          },
+        })}
+      </div>
     `;
   }
 }

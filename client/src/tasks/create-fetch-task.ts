@@ -1,6 +1,6 @@
-import { Task } from "@lit/task";
-import { ReactiveControllerHost } from "lit";
-import { api } from "../services/api";
+import { Task } from '@lit/task';
+import { ReactiveControllerHost } from 'lit';
+import { api } from '../services/api';
 
 type ApiMethod = keyof typeof api;
 

@@ -15,12 +15,12 @@ export function formatDuration(seconds: number): string {
 export function formatDate(dateString: string): string {
   // Parse UTC date string and ensure UTC interpretation
   const date = new Date(dateString + 'Z');
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    timeZoneName: "short"
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZoneName: 'short',
   });
 }

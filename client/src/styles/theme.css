@@ -1,72 +1,72 @@
 /* Colors */
 :root {
   /* Core Colors */
-  --neon-pink: #FF2E88;     /* Primary, bold highlight */
-  --midnight-plum: #1A0B22;    /* Darker variant of synthwave-plum */
-  --synthwave-plum: #291132;      /* Deep purple background */
-  
+  --neon-pink: #ff2e88; /* Primary, bold highlight */
+  --midnight-plum: #1a0b22; /* Darker variant of synthwave-plum */
+  --synthwave-plum: #291132; /* Deep purple background */
+
   /* Accent Colors */
-  --neon-yellow: #FFD700;   /* Electric energy */
-  --cyber-teal: #00FFE5;    /* Digital glow */
-  --plasma-purple: #B967FF;  /* Ethereal highlight */
-  
+  --neon-yellow: #ffd700; /* Electric energy */
+  --cyber-teal: #00ffe5; /* Digital glow */
+  --plasma-purple: #b967ff; /* Ethereal highlight */
+
   /* Contrast Colors */
-  --toxic-green: #39FF14;   /* Matrix-style pop */
-  --cyber-orange: #FF7A00;  /* Synthetic warmth */
-  --warm-white: #F5F5F5;    /* Text contrast */
+  --toxic-green: #39ff14; /* Matrix-style pop */
+  --cyber-orange: #ff7a00; /* Synthetic warmth */
+  --warm-white: #f5f5f5; /* Text contrast */
 
   /* Surface colors */
-  --surface-1: var(--synthwave-plum);    /* Main background */
-  --surface-2: var(--midnight-plum);      /* Cards, elevated elements */
+  --surface-1: var(--synthwave-plum); /* Main background */
+  --surface-2: var(--midnight-plum); /* Cards, elevated elements */
   --surface-3: rgba(26, 26, 26, 0.5); /* Nav, overlays */
-  
+
   /* Text colors */
-  --text-1: var(--warm-white);      /* Primary text */
+  --text-1: var(--warm-white); /* Primary text */
   --text-2: rgba(245, 245, 245, 0.7); /* Secondary text */
   --text-3: rgba(245, 245, 245, 0.5); /* Disabled text */
-  
+
   /* Brand colors */
-  --primary: var(--neon-pink);        /* Primary actions */
-  --secondary: var(--cyber-teal);   /* Secondary actions */
-  
+  --primary: var(--neon-pink); /* Primary actions */
+  --secondary: var(--cyber-teal); /* Secondary actions */
+
   /* Feedback colors */
-  --success: var(--toxic-green);    /* Success states */
-  --error: var(--neon-pink);       /* Error states */
-  --warning: var(--cyber-orange);   /* Warning states */
+  --success: var(--toxic-green); /* Success states */
+  --error: var(--neon-pink); /* Error states */
+  --warning: var(--cyber-orange); /* Warning states */
 
   /* Effects */
   --glow-sm: 0 0 5px rgba(255, 46, 136, 0.3);
   --glow-md: 0 0 10px rgba(255, 46, 136, 0.5);
   --glow-lg: 0 0 20px rgba(255, 46, 136, 0.7);
-  
+
   /* Spacing */
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem; /* 8px */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+
   /* Typography */
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', monospace;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
   --font-size-xl: 1.5rem;
-  
+
   /* Font weights */
   --font-normal: 400;
   --font-medium: 500;
   --font-bold: 600;
-  
+
   /* Letter spacing */
   --tracking-tight: -0.02em;
   --tracking-normal: 0;
   --tracking-wide: 0.02em;
-  
+
   /* Layout */
   --container-width: 800px;
   --nav-height: 80px;
-  
+
   /* Effects */
   --shadow-sm: 0 2px 4px rgba(0, 240, 255, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 240, 255, 0.15);
@@ -99,8 +99,12 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .fade-in {

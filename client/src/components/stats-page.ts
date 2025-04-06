@@ -1,8 +1,9 @@
-import { LitElement, html, css } from "lit";
-import { customElement } from "lit/decorators.js";
-import { formatDuration, formatDate } from "../utils/formatters";
-import { createFetchStatsTask } from "@/tasks/fetch-stats-task";
-import "./empty-state";
+import { LitElement, html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { formatDuration, formatDate } from '../utils/formatters';
+import { createFetchStatsTask } from '@/tasks/fetch-stats-task';
+import './empty-state';
+import './loading-state';
 
 interface TopItem {
   id: number;
@@ -42,9 +43,8 @@ interface Stats {
   rating_distribution: RatingStats[];
 }
 
-@customElement("stats-page")
+@customElement('stats-page')
 export class StatsPage extends LitElement {
-
   static styles = css`
     :host {
       display: block;
@@ -113,14 +113,6 @@ export class StatsPage extends LitElement {
       background: rgba(255, 0, 127, 0.1);
       box-shadow: var(--glow-sm);
     }
-
-    .loading {
-      text-align: center;
-      color: var(--color-text-muted);
-      padding: var(--space-xl);
-    }
-    
-
   `;
 
   #fetchStats = createFetchStatsTask(this);
@@ -128,7 +120,7 @@ export class StatsPage extends LitElement {
   #formatHour(hour: number | null | undefined) {
     if (hour === null || hour === undefined) return '--:00 AM';
     // Convert UTC hour to local time
-    const localHour = ((hour - new Date().getTimezoneOffset() / 60) + 24) % 24;
+    const localHour = (hour - new Date().getTimezoneOffset() / 60 + 24) % 24;
     const hour12 = localHour % 12 || 12; // Convert to 12-hour format
     const ampm = localHour < 12 ? 'AM' : 'PM';
     return `${hour12}:00 ${ampm}`;
@@ -136,12 +128,14 @@ export class StatsPage extends LitElement {
 
   #formatDay(day: number | null | undefined) {
     if (day === null || day === undefined) return '--';
-    return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][day];
+    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day];
   }
 
   #formatMonth(month: number | null | undefined) {
     if (month === null || month === undefined) return '--';
-    return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1];
+    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
+      month - 1
+    ];
   }
 
   #renderOverallStats(overall: Stats['overall']) {
@@ -184,13 +178,13 @@ export class StatsPage extends LitElement {
           <div>Plays</div>
         </div>
         ${items.map(
-      (item) => html`
+          (item) => html`
             <div class="stat">
               <span class="stat-label">${item.name}</span>
               <span class="stat-value">${item.play_count}</span>
             </div>
           `
-    )}
+        )}
       </div>
     `;
   }
@@ -203,19 +197,19 @@ export class StatsPage extends LitElement {
           <div>Plays</div>
         </div>
         ${stats.map(
-      (stat) => html`
+          (stat) => html`
             <div class="stat">
               <span class="stat-label">
                 ${stat.hour !== null && stat.hour !== undefined
-          ? this.#formatHour(stat.hour)
-          : stat.day !== null && stat.day !== undefined
-            ? this.#formatDay(stat.day)
-            : this.#formatMonth(stat.month)}
+                  ? this.#formatHour(stat.hour)
+                  : stat.day !== null && stat.day !== undefined
+                    ? this.#formatDay(stat.day)
+                    : this.#formatMonth(stat.month)}
               </span>
               <span class="stat-value">${stat.play_count}</span>
             </div>
           `
-    )}
+        )}
       </div>
     `;
   }
@@ -228,13 +222,13 @@ export class StatsPage extends LitElement {
           <div>Plays</div>
         </div>
         ${rating_distribution.map(
-      (stat) => html`
+          (stat) => html`
             <div class="stat">
               <span class="stat-label">${stat.rating}</span>
               <span class="stat-value">${stat.play_count}</span>
             </div>
           `
-    )}
+        )}
       </div>
     `;
   }
@@ -254,24 +248,24 @@ export class StatsPage extends LitElement {
       <h1>Stats</h1>
 
       ${this.#fetchStats.render({
-        pending: () => html`<div class="loading">Loading stats...</div>`,
+        pending: () => html`<loading-state />`,
         error: (err) => html`<div class="error">Failed to load stats: ${err}</div>`,
         complete: (stats) => {
           // Check if there's any play data
           if (!stats || stats.overall.total_plays === 0) {
             return this.#renderEmptyState();
           }
-          
+
           return html`
             <div class="grid">
               ${this.#renderOverallStats(stats.overall)}
-              ${this.#renderTopItems("Top Stations", stats.top_stations)}
-              ${this.#renderTopItems("Top Artists", stats.top_artists)}
-              ${this.#renderTopItems("Top Albums", stats.top_albums)}
-              ${this.#renderTopItems("Top Tracks", stats.top_tracks)}
-              ${this.#renderTimeStats("Plays by Hour", stats.plays_by_hour)}
-              ${this.#renderTimeStats("Plays by Day", stats.plays_by_day)}
-              ${this.#renderTimeStats("Plays by Month", stats.plays_by_month)}
+              ${this.#renderTopItems('Top Stations', stats.top_stations)}
+              ${this.#renderTopItems('Top Artists', stats.top_artists)}
+              ${this.#renderTopItems('Top Albums', stats.top_albums)}
+              ${this.#renderTopItems('Top Tracks', stats.top_tracks)}
+              ${this.#renderTimeStats('Plays by Hour', stats.plays_by_hour)}
+              ${this.#renderTimeStats('Plays by Day', stats.plays_by_day)}
+              ${this.#renderTimeStats('Plays by Month', stats.plays_by_month)}
               ${this.#renderRatingStats(stats.rating_distribution)}
             </div>
           `;
@@ -279,5 +273,4 @@ export class StatsPage extends LitElement {
       })}
     `;
   }
-
 }
