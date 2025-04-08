@@ -1,9 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { createFetchStatsTask } from '../tasks/fetch-stats-task';
 import { formatDuration, formatDate } from '../utils/formatters';
-import { createFetchStatsTask } from '@/tasks/fetch-stats-task';
-import './empty-state';
+import { format } from 'date-fns';
 import './loading-state';
+
 
 interface TopItem {
   id: number;
@@ -119,16 +120,55 @@ export class StatsPage extends LitElement {
 
   #formatHour(hour: number | null | undefined) {
     if (hour === null || hour === undefined) return '--:00 AM';
-    // Convert UTC hour to local time
-    const localHour = (hour - new Date().getTimezoneOffset() / 60 + 24) % 24;
-    const hour12 = localHour % 12 || 12; // Convert to 12-hour format
-    const ampm = localHour < 12 ? 'AM' : 'PM';
-    return `${hour12}:00 ${ampm}`;
+
+    // Get the current date to account for DST
+    const today = new Date();
+    
+    // Create a date object with today's date and the UTC hour
+    const utcDate = new Date(Date.UTC(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      hour,
+      0,
+      0
+    ));
+    
+    // Convert to local time, accounting for DST
+    const localDate = new Date(utcDate.getTime());
+    
+    // Format the local date as 12-hour time
+    return format(localDate, 'h:00 a');
   }
 
   #formatDay(day: number | null | undefined) {
     if (day === null || day === undefined) return '--';
-    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day];
+    
+    // The backend uses Python's weekday() which returns:
+    // 0=Monday, 1=Tuesday, ..., 6=Sunday
+    
+    // We need to map Python's weekday to JavaScript's day of week
+    // Python: 0 (Monday) to 6 (Sunday)
+    // JavaScript: 0 (Sunday) to 6 (Saturday)
+    
+    // First, convert Python weekday to JavaScript day of week
+    // (Python day + 1) % 7 gives us JavaScript day
+    const jsDayOfWeek = (day + 1) % 7;
+    
+    // Now adjust for timezone offset
+    // Get current date to account for DST
+    const now = new Date();
+    
+    // Get timezone offset in days (offset is in minutes)
+    // Negative because we're converting from UTC to local
+    const offsetDays = -now.getTimezoneOffset() / (60 * 24);
+    
+    // Apply timezone offset and ensure it stays in 0-6 range
+    const localDayIndex = (jsDayOfWeek - Math.floor(offsetDays) + 7) % 7;
+    
+    // Map to day names
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return dayNames[localDayIndex];
   }
 
   #formatMonth(month: number | null | undefined) {
@@ -190,13 +230,45 @@ export class StatsPage extends LitElement {
   }
 
   #renderTimeStats(title: string, stats: TimeStats[]) {
+    // Create a sorted copy of the stats
+    const sortedStats = [...stats];
+    
+    if (title === 'Plays by Hour') {
+      // Sort hours by local time, not UTC time
+      sortedStats.sort((a, b) => {
+        if (a.hour === undefined || b.hour === undefined) return 0;
+        
+        // Convert UTC hours to local hours for sorting
+        const localHourA = (a.hour - new Date().getTimezoneOffset() / 60 + 24) % 24;
+        const localHourB = (b.hour - new Date().getTimezoneOffset() / 60 + 24) % 24;
+        
+        return localHourA - localHourB;
+      });
+    } else if (title === 'Plays by Day') {
+      // Sort days from Sunday to Saturday (JavaScript convention)
+      sortedStats.sort((a, b) => {
+        if (a.day === undefined || b.day === undefined) return 0;
+        // Convert Python's weekday to JavaScript's day of week for sorting
+        const jsDayA = (a.day + 1) % 7; // 0=Sunday, 1=Monday, ..., 6=Saturday
+        const jsDayB = (b.day + 1) % 7;
+        return jsDayA - jsDayB;
+      });
+    } else if (title === 'Plays by Month') {
+      // Sort months from January to December
+      sortedStats.sort((a, b) => {
+        const monthA = a.month ?? 0;
+        const monthB = b.month ?? 0;
+        return monthA - monthB;
+      });
+    }
+    
     return html`
       <div class="card">
         <div class="card-heading">
           <h2>${title}</h2>
           <div>Plays</div>
         </div>
-        ${stats.map(
+        ${sortedStats.map(
           (stat) => html`
             <div class="stat">
               <span class="stat-label">
